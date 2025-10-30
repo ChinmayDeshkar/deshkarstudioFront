@@ -2,15 +2,6 @@
   background: linear-gradient(135deg, #e3f2fd, #ffffff);
 }
 
-.form-control:focus {
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-  border-color: #0d6efd;
-}
-
-.btn-lg {
-  font-weight: 600;
-}
-
 .card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -18,4 +9,13 @@
 .card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.btn-lg {
+  font-weight: 600;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-color: #0d6efd;
 }

@@ -1,0 +1,118 @@
+<div class="container py-5">
+  <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
+    <h3 class="text-center text-primary mb-3">
+      <i class="bi bi-cart-plus"></i> Add Purchase
+    </h3>
+
+    <!-- Phone Number -->
+    <div class="mb-3">
+      <label class="form-label">Phone Number</label>
+      <div class="input-group">
+        <input
+          type="text"
+          [(ngModel)]="phoneNumber"
+          class="form-control"
+          placeholder="Enter customer phone number"
+        />
+        <button class="btn btn-outline-primary" (click)="checkCustomer()" [disabled]="loading">
+          Check
+        </button>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div *ngIf="message" class="alert alert-info p-2">{{ message }}</div>
+
+    <!-- Customer Info -->
+    <div *ngIf="!loading">
+      <div class="mb-3">
+        <label class="form-label">Customer Name</label>
+        <input
+          type="text"
+          [(ngModel)]="customerName"
+          class="form-control"
+          placeholder="Customer Name"
+          [readonly]="customerExists"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          [(ngModel)]="email"
+          class="form-control"
+          placeholder="Email"
+          [readonly]="customerExists"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Address</label>
+        <textarea
+          [(ngModel)]="address"
+          class="form-control"
+          placeholder="Address"
+          [readonly]="customerExists"
+        ></textarea>
+      </div>
+
+      <hr />
+      <h5 class="text-secondary">Purchase Details</h5>
+
+      <div class="mb-3">
+        <label class="form-label">Price</label>
+        <input type="number" [(ngModel)]="price" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Payment Method</label>
+        <select [(ngModel)]="paymentMethod" class="form-select">
+          <option value="">Select Method</option>
+          <option>Cash</option>
+          <option>UPI</option>
+          <option>Card</option>
+          <option>Net Banking</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Payment Status</label>
+        <select [(ngModel)]="paymentStatus" class="form-select">
+          <option>PAID</option>
+          <option>PENDING</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Balance</label>
+        <input
+          type="number"
+          [(ngModel)]="balance"
+          class="form-control"
+          placeholder="Remaining balance"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Remarks</label>
+        <textarea [(ngModel)]="remarks" class="form-control"></textarea>
+      </div>
+
+      <div class="text-center">
+        <button
+          class="btn btn-primary w-100"
+          (click)="submit()"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Saving...' : 'Add Purchase' }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2">Processing...</p>
+    </div>
+  </div>
+</div>

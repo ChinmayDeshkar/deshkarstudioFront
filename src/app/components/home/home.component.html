@@ -1,1 +1,76 @@
-<p>home works!</p>
+<div class="home-container">
+  <!-- Welcome Section -->
+  <div class="welcome-section animate__animated animate__fadeInDown">
+    <h2 class="fw-bold">
+      👋 Welcome back, <span class="text-primary">{{ username }}</span>!
+    </h2>
+    <p class="text-muted">
+      You are logged in as <strong>{{ role.replace('ROLE_', '') }}</strong>
+    </p>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div *ngIf="role === 'ROLE_ADMIN'" class="dashboard-grid animate__animated animate__fadeInUp">
+    <div class="dashboard-card gradient-card-1">
+      <i class="bi bi-people-fill"></i>
+      <h4>Manage Employees</h4>
+      <p>View, add or update employee records.</p>
+      <a routerLink="/admin" class="btn btn-light btn-sm">Go</a>
+    </div>
+
+    <div class="dashboard-card gradient-card-2">
+      <i class="bi bi-cart-check"></i>
+      <h4>Purchases</h4>
+      <p>Track and manage all purchase data.</p>
+      <a routerLink="/purchase-report" class="btn btn-light btn-sm">View</a>
+    </div>
+
+    <div class="dashboard-card gradient-card-3">
+      <i class="bi bi-bar-chart-line"></i>
+      <h4>Reports</h4>
+      <p>View sales and performance metrics.</p>
+      <a routerLink="/purchase-report" class="btn btn-light btn-sm">Reports</a>
+    </div>
+
+    <div class="dashboard-card gradient-card-4">
+      <i class="bi bi-person-badge"></i>
+      <h4>Profile</h4>
+      <p>View or edit your account details.</p>
+      <a routerLink="/profile" class="btn btn-light btn-sm">Profile</a>
+    </div>
+  </div>
+
+  <!-- Employee Dashboard -->
+  <div *ngIf="role === 'ROLE_EMPLOYEE'" class="dashboard-grid animate__animated animate__fadeInUp">
+    <div class="dashboard-card gradient-card-2">
+      <i class="bi bi-cart-plus"></i>
+      <h4>Add Purchase</h4>
+      <p>Create a new purchase entry for a customer.</p>
+      <a routerLink="/add-purchase" class="btn btn-light btn-sm">Add</a>
+    </div>
+
+    <div class="dashboard-card gradient-card-3">
+      <i class="bi bi-bar-chart"></i>
+      <h4>Purchase Reports</h4>
+      <p>Track your recent purchases and revenue.</p>
+      <a routerLink="/purchase-report" class="btn btn-light btn-sm">View</a>
+    </div>
+
+    <div class="dashboard-card gradient-card-4">
+      <i class="bi bi-person-circle"></i>
+      <h4>My Profile</h4>
+      <p>Update your personal and account details.</p>
+      <a routerLink="/profile" class="btn btn-light btn-sm">Profile</a>
+    </div>
+  </div>
+
+  <!-- Default User Dashboard -->
+  <div *ngIf="role !== 'ROLE_ADMIN' && role !== 'ROLE_EMPLOYEE'" class="dashboard-grid animate__animated animate__fadeInUp">
+    <div class="dashboard-card gradient-card-4">
+      <i class="bi bi-person-circle"></i>
+      <h4>My Profile</h4>
+      <p>View and update your account information.</p>
+      <a routerLink="/profile" class="btn btn-light btn-sm">Profile</a>
+    </div>
+  </div>
+</div>

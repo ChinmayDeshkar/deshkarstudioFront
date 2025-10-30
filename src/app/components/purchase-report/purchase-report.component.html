@@ -1,0 +1,60 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-3">📊 Purchase Report</h2>
+
+  <div class="filters">
+    <button class="btn btn-primary me-2" 
+            [class.active]="selectedFilter==='today'"
+            (click)="onFilterChange('today')">
+      Today
+    </button>
+
+    <button class="btn btn-primary me-2"
+            [class.active]="selectedFilter==='month'"
+            (click)="onFilterChange('month')">
+      This Month
+    </button>
+
+    <div class="date-range d-inline-flex align-items-center">
+      <input type="date" [(ngModel)]="startDate" class="form-control me-2" />
+      <input type="date" [(ngModel)]="endDate" class="form-control me-2" />
+      <button class="btn btn-success" (click)="loadRangePurchases()">Filter</button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center mt-4">
+    <p>Loading data...</p>
+  </div>
+
+  <table *ngIf="!loading && purchases.length > 0" class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Customer Name</th>
+        <th>Phone</th>
+        <th>Price</th>
+        <th>Balance</th>
+        <th>Payment Method</th>
+        <th>Status</th>
+        <th>Remarks</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of purchases; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ p.customerName }}</td>
+        <td>{{ p.phoneNumber }}</td>
+        <td>{{ p.price }}</td>
+        <td>{{ p.balance }}</td>
+        <td>{{ p.paymentMethod }}</td>
+        <td>{{ p.paymentStatus }}</td>
+        <td>{{ p.remarks }}</td>
+        <td>{{ p.createdDate | date:'medium' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && purchases.length === 0" class="text-center mt-3 text-muted">
+    No purchases found.
+  </p>
+</div>
