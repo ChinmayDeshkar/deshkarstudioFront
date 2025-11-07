@@ -1,60 +1,101 @@
-<div class="container mt-4">
-  <h2 class="text-center mb-3">📊 Purchase Report</h2>
+<div class="container-fluid py-5 purchase-report-page">
+  <div class="card shadow-lg border-0 p-4 mx-auto" style="max-width: 1100px;">
+    <h2 class="text-center text-gradient fw-bold mb-4">
+      <i class="bi bi-bar-chart-fill"></i> Purchase Report
+    </h2>
 
-  <div class="filters">
-    <button class="btn btn-primary me-2" 
-            [class.active]="selectedFilter==='today'"
-            (click)="onFilterChange('today')">
-      Today
-    </button>
+    <!-- Filters Section -->
+    <div class="d-flex flex-wrap justify-content-center align-items-center mb-4 gap-2">
+      <button
+        class="btn btn-outline-primary fw-semibold"
+        [class.active]="selectedFilter === 'today'"
+        (click)="onFilterChange('today')"
+      >
+        <i class="bi bi-calendar-day"></i> Today
+      </button>
 
-    <button class="btn btn-primary me-2"
-            [class.active]="selectedFilter==='month'"
-            (click)="onFilterChange('month')">
-      This Month
-    </button>
+      <button
+        class="btn btn-outline-primary fw-semibold"
+        [class.active]="selectedFilter === 'month'"
+        (click)="onFilterChange('month')"
+      >
+        <i class="bi bi-calendar-month"></i> This Month
+      </button>
 
-    <div class="date-range d-inline-flex align-items-center">
-      <input type="date" [(ngModel)]="startDate" class="form-control me-2" />
-      <input type="date" [(ngModel)]="endDate" class="form-control me-2" />
-      <button class="btn btn-success" (click)="loadRangePurchases()">Filter</button>
+      <div class="d-flex align-items-center bg-light p-2 rounded shadow-sm">
+        <input
+          type="date"
+          [(ngModel)]="startDate"
+          class="form-control me-2"
+          style="min-width: 160px;"
+        />
+        <input
+          type="date"
+          [(ngModel)]="endDate"
+          class="form-control me-2"
+          style="min-width: 160px;"
+        />
+        <button class="btn btn-success fw-semibold" (click)="loadRangePurchases()">
+          <i class="bi bi-funnel"></i> Filter
+        </button>
+      </div>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-3 fw-semibold text-secondary">Loading data...</p>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!loading && purchases.length > 0" class="table-responsive fade-in">
+      <table class="table table-hover align-middle text-center">
+        <thead class="table-primary">
+          <tr>
+            <th>#</th>
+            <th>Customer Name</th>
+            <th>Phone</th>
+            <th>Price (₹)</th>
+            <th>Balance</th>
+            <th>Payment Method</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of purchases; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ p.customerName }}</td>
+            <td>{{ p.phoneNumber }}</td>
+            <td class="fw-semibold text-success">{{ p.price | number }}</td>
+            <td [ngClass]="p.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'">
+              {{ p.balance }}
+            </td>
+            <td>{{ p.paymentMethod }}</td>
+            <td>
+              <span
+                class="badge"
+                [class.bg-success]="p.paymentStatus === 'PAID'"
+                [class.bg-warning]="p.paymentStatus === 'PENDING'"
+              >
+                {{ p.paymentStatus }}
+              </span>
+            </td>
+            <td>{{ p.remarks || '-' }}</td>
+            <td>{{ p.createdDate | date: 'medium' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty Data -->
+    <div *ngIf="!loading && purchases.length === 0" class="text-center py-5">
+      <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+      <p class="mt-2 text-muted fs-5">No purchases found.</p>
     </div>
   </div>
-
-  <div *ngIf="loading" class="text-center mt-4">
-    <p>Loading data...</p>
-  </div>
-
-  <table *ngIf="!loading && purchases.length > 0" class="table table-striped mt-3">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Customer Name</th>
-        <th>Phone</th>
-        <th>Price</th>
-        <th>Balance</th>
-        <th>Payment Method</th>
-        <th>Status</th>
-        <th>Remarks</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of purchases; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ p.customerName }}</td>
-        <td>{{ p.phoneNumber }}</td>
-        <td>{{ p.price }}</td>
-        <td>{{ p.balance }}</td>
-        <td>{{ p.paymentMethod }}</td>
-        <td>{{ p.paymentStatus }}</td>
-        <td>{{ p.remarks }}</td>
-        <td>{{ p.createdDate | date:'medium' }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p *ngIf="!loading && purchases.length === 0" class="text-center mt-3 text-muted">
-    No purchases found.
-  </p>
+  <app-analytics-dashboard></app-analytics-dashboard>
 </div>
+
+

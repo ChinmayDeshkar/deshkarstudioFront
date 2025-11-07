@@ -11,6 +11,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AddPurchaseComponent } from './components/add-purchase/add-purchase.component';
 import { PurchaseReportComponent } from './components/purchase-report/purchase-report.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { RestrictedPageComponent } from './components/restricted-page/restricted-page.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -20,8 +21,9 @@ const routes: Routes = [
     { path: '', component: HomeComponent, canActivate:[AuthGuard] },
     { path: 'profile', component: ProfileComponent, canActivate:[AuthGuard] },
     { path: 'add-purchase', component: AddPurchaseComponent, canActivate:[AuthGuard] },
-    { path: 'purchase-report', component: PurchaseReportComponent, canActivate:[AuthGuard] },
+    { path: 'purchase-report', component: PurchaseReportComponent, canActivate:[AuthGuard, RoleGuard], data: { roles: ['ROLE_ADMIN'] } },
     { path: 'reset', component: ResetPasswordComponent },
+    { path: 'restricted', component: RestrictedPageComponent },
     { path: '**', redirectTo: '' }
 ];
 

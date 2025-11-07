@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly tokenKey = 'auth_token';
-  private readonly roleKey = 'auth_role';
+  private readonly roleKey = 'role';
 
   private roleSubject = new BehaviorSubject<string | null>(localStorage.getItem('role'));
   private usernameSubject = new BehaviorSubject<string | null>(localStorage.getItem('username'));
