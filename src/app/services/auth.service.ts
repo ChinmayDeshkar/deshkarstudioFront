@@ -1,40 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly tokenKey = 'auth_token';
   private readonly roleKey = 'auth_role';
 
+  private roleSubject = new BehaviorSubject<string | null>(localStorage.getItem('role'));
+  private usernameSubject = new BehaviorSubject<string | null>(localStorage.getItem('username'));
+
+  role$ = this.roleSubject.asObservable();
+  username$ = this.usernameSubject.asObservable();
+
   constructor(private http: HttpClient) {}
 
-  // STEP 1: Send OTP for signup
-  signupRequest(payload: any) {
-    return this.http.post(`${environment.apiUrl}/auth/signup-request`, payload);
+  login(username: string, password: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/login`, { username, password });
   }
 
-  // STEP 2: Verify OTP & create user
-  signupVerify(phone: string, otp: string) {
-    return this.http.post(`${environment.apiUrl}/auth/signup-verify`, { phoneNumber: phone, otp });
+   loginSuccess(token: string, role: string, username: string) {
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('role', role);
+    localStorage.setItem('username', username);
+    this.roleSubject.next(role);
+    this.usernameSubject.next(username);
   }
 
-  // LOGIN OTP FLOW
-  loginRequest(phone: string) {
-    return this.http.post(`${environment.apiUrl}/auth/login-request`, { phoneNumber: phone });
-  }
-
-  loginVerify(phone: string, otp: string): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}/auth/login-verify`, { phoneNumber: phone, otp })
-      .pipe(map(res => {
-        if (res?.accessToken) {
-          localStorage.setItem(this.tokenKey, res.accessToken);
-          localStorage.setItem(this.roleKey, res.role);
-        }
-        return res;
-      }));
+  resetPassword(username: string, oldPassword: string, newPassword: string) {
+    return this.http.post(`${environment.apiUrl}/auth/first-login`, { username, oldPassword, newPassword });
   }
 
   logout() {
@@ -44,9 +40,31 @@ export class AuthService {
 
   getToken() { return localStorage.getItem(this.tokenKey); }
   getRole() { return localStorage.getItem(this.roleKey); }
-  isLoggedIn() { return !!this.getToken(); }
+  isLoggedIn(): Observable<boolean> {
+    const token = this.getToken();
+    if (!token) {
+      console.log('No token found');
+      return of(false);
+    }
+
+    return this.http.post<any>(`${environment.apiUrl}/auth/validate-token`, { token }).pipe(
+      map((res) => {
+        console.log('Token valid:', res);
+        return res.isValid === true;
+      }),
+      catchError((err) => {
+        console.log('Token invalid:', err);
+        this.logout();
+        return of(false);
+      })
+    );
+  }
+    // return !!this.getToken(); 
+  
 
   getProfile() {
+    console.log(this.getToken());
+    
     return this.http.get(`${environment.apiUrl}/user/profile`, {
       headers: { Authorization: `Bearer ${this.getToken()}` }
     });

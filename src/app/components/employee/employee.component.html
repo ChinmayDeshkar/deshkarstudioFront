@@ -1,1 +1,79 @@
-<p>employee works!</p>
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Employee Management</h2>
+
+  <div class="d-flex justify-content-between mb-3">
+    <input type="text" class="form-control w-50" placeholder="Search by name or username..."
+           [(ngModel)]="searchTerm" (input)="applyFilter()" />
+    <select class="form-select w-25" [(ngModel)]="filterStatus" (change)="applyFilter()">
+      <option value="all">All</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+  </div>
+
+  <table class="table table-hover table-bordered align-middle text-center">
+    <thead class="table-dark">
+      <tr>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Active</th>
+        <th>Salary</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let emp of filteredEmployees">
+        <td>{{ emp.username }}</td>
+        <td>{{ emp.firstName }} {{ emp.lastName }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.phone }}</td>
+        <td>{{ emp.role }}</td>
+        <td>
+          <span class="badge" [ngClass]="emp.active ? 'bg-success' : 'bg-danger'">
+            {{ emp.active ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+        <td>{{ emp.salary }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" (click)="editEmployee(emp)">
+            <i class="bi bi-pencil"></i> Edit
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="message" class="text-success text-center">{{ message }}</p>
+
+  <!-- Edit Modal -->
+  <div *ngIf="selectedEmployee" class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content shadow-lg border-0 rounded-3">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Edit Employee</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cancelEdit()"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <input type="text" [(ngModel)]="selectedEmployee.firstName" name="firstName" placeholder="First Name" class="form-control mb-2">
+            <input type="text" [(ngModel)]="selectedEmployee.lastName" name="lastName" placeholder="Last Name" class="form-control mb-2">
+            <input type="text" [(ngModel)]="selectedEmployee.email" name="email" placeholder="Email" class="form-control mb-2">
+            <input type="text" [(ngModel)]="selectedEmployee.phone" name="phone" placeholder="Phone" class="form-control mb-2">
+            <input type="number" [(ngModel)]="selectedEmployee.salary" name="salary" placeholder="Salary" class="form-control mb-2">
+            <select [(ngModel)]="selectedEmployee.active" name="active" class="form-select mb-3">
+              <option [ngValue]="true">Active</option>
+              <option [ngValue]="false">Inactive</option>
+            </select>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+          <button class="btn btn-success" (click)="saveEmployee()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

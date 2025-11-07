@@ -22,12 +22,6 @@
         </li>
 
         <li class="nav-item mx-2">
-          <a class="nav-link" routerLink="/profile" routerLinkActive="active">
-            <i class="bi bi-person-circle me-1"></i> Profile
-          </a>
-        </li>
-
-        <li class="nav-item mx-2">
           <a class="nav-link" routerLink="/add-purchase" routerLinkActive="active">
             <i class="bi bi-cart-plus me-1"></i> Add Purchase
           </a>
@@ -45,9 +39,15 @@
           </a>
         </li>
 
-        <li class="nav-item mx-2" *ngIf="isEmployee()">
+        <li class="nav-item mx-2" *ngIf="isAdmin()">
           <a class="nav-link" routerLink="/employee" routerLinkActive="active">
             <i class="bi bi-briefcase-fill me-1"></i> Employee
+          </a>
+        </li>
+
+        <li class="nav-item mx-2">
+          <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+            <i class="bi bi-person-circle me-1"></i> Profile
           </a>
         </li>
 

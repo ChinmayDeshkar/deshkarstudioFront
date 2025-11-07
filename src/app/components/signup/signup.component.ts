@@ -27,38 +27,5 @@ export class SignupComponent {
     private router: Router
   ) {}
 
-  requestOtp() {
-    if (this.signupForm.invalid) {
-      alert('Please fill all required fields correctly.');
-      return;
-    }
 
-    if (this.signupForm.value.password !== this.signupForm.value.confirmPassword) {
-      alert('Passwords do not match.');
-      return;
-    }
-
-    this.auth.signupRequest(this.signupForm.value).subscribe({
-      next: () => {
-        this.otpSent = true;
-        alert('OTP sent to your phone.');
-      },
-      error: err => {
-        alert(err.error?.error || 'Failed to send OTP');
-      }
-    });
-  }
-
-  verifyOtp() {
-    const phone = this.signupForm.value.phone!;
-    this.auth.signupVerify(phone, this.otp).subscribe({
-      next: () => {
-        alert('Signup successful! Please login.');
-        this.router.navigate(['/login']);
-      },
-      error: err => {
-        alert(err.error?.error || 'OTP verification failed');
-      }
-    });
-  }
 }

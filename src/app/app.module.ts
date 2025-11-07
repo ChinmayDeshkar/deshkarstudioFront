@@ -13,9 +13,10 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AddPurchaseComponent } from './components/add-purchase/add-purchase.component';
 import { PurchaseReportComponent } from './components/purchase-report/purchase-report.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent],
+  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent, ResetPasswordComponent],
   imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ReactiveFormsModule,],
   bootstrap: [AppComponent]
 })
