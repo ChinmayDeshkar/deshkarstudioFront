@@ -17,9 +17,11 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { NgChartsModule } from 'ng2-charts';
 import { AnalyticsDashboardComponent } from './components/analytics-dashboard/analytics-dashboard.component';
 import { RestrictedPageComponent } from './components/restricted-page/restricted-page.component';
+import { TaskpageComponent } from './components/taskpage/taskpage.component';
+import { RecentTasksComponent } from './components/recent-tasks/recent-tasks.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent, ResetPasswordComponent, AnalyticsDashboardComponent, RestrictedPageComponent],
+  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent, ResetPasswordComponent, AnalyticsDashboardComponent, RestrictedPageComponent, TaskpageComponent, RecentTasksComponent],
   imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ReactiveFormsModule,NgChartsModule],
   bootstrap: [AppComponent]
 })
