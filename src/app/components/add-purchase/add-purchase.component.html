@@ -1,118 +1,129 @@
-<div class="container py-5">
-  <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
-    <h3 class="text-center text-primary mb-3">
+<div class="container py-5 add-purchase-page">
+  <div class="card shadow-lg border-0 p-4 mx-auto animate__animated animate__fadeIn" style="max-width: 650px;">
+    <h3 class="text-center text-gradient mb-4 fw-bold">
       <i class="bi bi-cart-plus"></i> Add Purchase
     </h3>
 
     <!-- Phone Number -->
     <div class="mb-3">
-      <label class="form-label">Phone Number</label>
+      <label class="form-label fw-semibold">
+        <i class="bi bi-telephone-fill"></i> Phone Number
+      </label>
       <div class="input-group">
         <input
           type="text"
-          [(ngModel)]="phoneNumber"
+          [(ngModel)]="customer.phoneNumber"
           class="form-control"
           placeholder="Enter customer phone number"
         />
-        <button class="btn btn-outline-primary" (click)="checkCustomer()" [disabled]="loading">
-          Check
+        <button class="btn btn-primary px-4" (click)="checkCustomer()" [disabled]="loading">
+          <i class="bi bi-search"></i> Check
         </button>
       </div>
     </div>
 
     <!-- Message -->
-    <div *ngIf="message" class="alert alert-info p-2">{{ message }}</div>
+    <div *ngIf="message" class="alert alert-info py-2 mb-3 text-center rounded-3 shadow-sm">
+      {{ message }}
+    </div>
 
     <!-- Customer Info -->
-    <div *ngIf="!loading">
-      <div class="mb-3">
-        <label class="form-label">Customer Name</label>
-        <input
-          type="text"
-          [(ngModel)]="customerName"
-          class="form-control"
-          placeholder="Customer Name"
-          [readonly]="customerExists"
-        />
+    <div *ngIf="!loading" class="customer-section fade-in">
+      <h5 class="text-secondary mb-3 border-bottom pb-2">
+        <i class="bi bi-person-lines-fill"></i> Customer Information
+      </h5>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Customer Name</label>
+          <input
+            type="text"
+            [(ngModel)]="customer.customerName"
+            class="form-control"
+            placeholder="Customer Name"
+            [readonly]="customerExists"
+          />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            [(ngModel)]="customer.email"
+            class="form-control"
+            placeholder="Email"
+            [readonly]="customerExists"
+          />
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input
-          type="email"
-          [(ngModel)]="email"
-          class="form-control"
-          placeholder="Email"
-          [readonly]="customerExists"
-        />
-      </div>
-
-      <div class="mb-3">
+      <div class="mt-3">
         <label class="form-label">Address</label>
         <textarea
-          [(ngModel)]="address"
+          [(ngModel)]="customer.address"
           class="form-control"
+          rows="2"
           placeholder="Address"
           [readonly]="customerExists"
         ></textarea>
       </div>
 
-      <hr />
-      <h5 class="text-secondary">Purchase Details</h5>
+      <hr class="my-4" />
 
-      <div class="mb-3">
-        <label class="form-label">Price</label>
-        <input type="number" [(ngModel)]="price" class="form-control" />
+      <!-- Purchase Details -->
+      <h5 class="text-secondary mb-3 border-bottom pb-2">
+        <i class="bi bi-receipt-cutoff"></i> Purchase Details
+      </h5>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Price</label>
+          <input type="number" [(ngModel)]="payload.price" class="form-control" placeholder="Enter amount" />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Payment Method</label>
+          <select [(ngModel)]="payload.paymentMethod" class="form-select">
+            <option value="">Select Method</option>
+            <option>Cash</option>
+            <option>UPI</option>
+            <option>Card</option>
+            <option>Net Banking</option>
+          </select>
+        </div> 
+
+        <div class="col-md-6">
+          <label class="form-label">Advance</label>
+          <input
+            type="number"
+            [(ngModel)]="payload.advancePaid"
+            class="form-control"
+            placeholder="Advance amount"
+          />
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Payment Method</label>
-        <select [(ngModel)]="paymentMethod" class="form-select">
-          <option value="">Select Method</option>
-          <option>Cash</option>
-          <option>UPI</option>
-          <option>Card</option>
-          <option>Net Banking</option>
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Payment Status</label>
-        <select [(ngModel)]="paymentStatus" class="form-select">
-          <option>PAID</option>
-          <option>PENDING</option>
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Balance</label>
-        <input
-          type="number"
-          [(ngModel)]="balance"
-          class="form-control"
-          placeholder="Remaining balance"
-        />
-      </div>
-
-      <div class="mb-3">
+      <div class="mt-3">
         <label class="form-label">Remarks</label>
-        <textarea [(ngModel)]="remarks" class="form-control"></textarea>
+        <textarea [(ngModel)]="payload.remarks" class="form-control" rows="2" placeholder="Remarks"></textarea>
       </div>
 
-      <div class="text-center">
+      <div class="text-center mt-4">
         <button
-          class="btn btn-primary w-100"
+          class="btn btn-gradient w-100 py-2"
           (click)="submit()"
           [disabled]="loading"
         >
+          <i class="bi bi-check-circle me-2"></i>
           {{ loading ? 'Saving...' : 'Add Purchase' }}
         </button>
       </div>
     </div>
 
-    <div *ngIf="loading" class="text-center py-4">
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status"></div>
-      <p class="mt-2">Processing...</p>
+      <p class="mt-2 fw-semibold text-secondary">Processing...</p>
     </div>
   </div>
 </div>

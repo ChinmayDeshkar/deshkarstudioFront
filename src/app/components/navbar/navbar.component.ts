@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { log } from 'console';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,19 +13,16 @@ export class NavbarComponent implements OnInit {
   userRole: string | null = null;
   username: string | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      this.userRole = payload.role;
-      this.username = payload.sub;
-    }
+    this.auth.role$.subscribe(role => this.userRole = role);
+    this.auth.username$.subscribe(username => this.username = username);
   }
 
   logout() {
-    localStorage.removeItem('token');
+    // localStorage.removeItem('auth_token');
+    localStorage.clear();
     this.router.navigate(['/login']);
   }
 

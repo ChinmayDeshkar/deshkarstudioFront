@@ -13,10 +13,16 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AddPurchaseComponent } from './components/add-purchase/add-purchase.component';
 import { PurchaseReportComponent } from './components/purchase-report/purchase-report.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { NgChartsModule } from 'ng2-charts';
+import { AnalyticsDashboardComponent } from './components/analytics-dashboard/analytics-dashboard.component';
+import { RestrictedPageComponent } from './components/restricted-page/restricted-page.component';
+import { TaskpageComponent } from './components/taskpage/taskpage.component';
+import { RecentTasksComponent } from './components/recent-tasks/recent-tasks.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent],
-  imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ReactiveFormsModule,],
+  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent, ResetPasswordComponent, AnalyticsDashboardComponent, RestrictedPageComponent, TaskpageComponent, RecentTasksComponent],
+  imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ReactiveFormsModule,NgChartsModule],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

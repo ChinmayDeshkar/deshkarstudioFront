@@ -14,18 +14,31 @@ export class AddPurchaseComponent {
   message = '';
 
   // Customer details
-  customerName = '';
-  email = '';
-  address = '';
+  customer = {
+    id: 0,
+    customerName: '',
+    phoneNumber: '',
+    email: '',
+    address: ''
+  }
+  payload = {
+    customer:this.customer,
+    price: 0,
+    advancePaid: 0,
+    paymentMethod: '',
+    paymentStatus: 'PAID',
+    remarks: '',
+    updatedBy: ''    
+  }
 
   // Purchase details
   price = 0;
   paymentMethod = '';
   paymentStatus = 'PAID';
-  balance = 0;
+  advance = 0;
   remarks = '';
 
-  username = '';
+  username = localStorage.getItem('username') || '';
   customerId: number | null = null;
 
 
@@ -35,7 +48,7 @@ export class AddPurchaseComponent {
     this.getUserName();
   }
   checkCustomer() {
-    if (!this.phoneNumber) {
+    if (!this.customer.phoneNumber) {
       this.message = '⚠️ Please enter a phone number.';
       return;
     }
@@ -43,20 +56,21 @@ export class AddPurchaseComponent {
     this.loading = true;
     this.message = '';
 
-    this.purchaseService.checkCustomer(this.phoneNumber).subscribe({
+    this.purchaseService.checkCustomer(this.customer.phoneNumber).subscribe({
       next: (res) => {
+        console.log('Response from checkCustomer:', res);
         if (res.exists === true) {
           this.customerExists = true;
-          this.customerId = res.id;
-          this.customerName = res.customerName;
-          this.email = res.email;
-          this.address = res.address;
+          this.customer.id = res.id;
+          this.customer.customerName = res.customerName;
+          this.customer.email = res.email;
+          this.customer.address = res.address;
           this.message = '✅ Existing customer found! Details are locked.';
         } else {
           this.customerExists = false;
-          this.customerName = '';
-          this.email = '';
-          this.address = '';
+          this.customer.customerName = '';
+          this.customer.email = '';
+          this.customer.address = '';
           this.message = '🆕 New customer — please fill details.';
         }
         this.loading = false;
@@ -71,7 +85,11 @@ export class AddPurchaseComponent {
 
   /** 💾 Submit purchase */
   submit() {
-    if (!this.phoneNumber || !this.price || !this.paymentMethod) {
+    console.log(this.customer.phoneNumber);
+    console.log(this.payload.price);
+    console.log(this.payload.paymentMethod);
+    
+    if (!this.customer.phoneNumber || !this.payload.price || !this.payload.paymentMethod) {
       this.message = '⚠️ Please fill all required fields.';
       return;
     }
@@ -79,20 +97,10 @@ export class AddPurchaseComponent {
     this.loading = true;
     this.message = '';
 
-    const payload = {
-      customerName: this.customerName,
-      phoneNumber: this.phoneNumber,
-      email: this.email,
-      address: this.address,
-      price: this.price,
-      paymentMethod: this.paymentMethod,
-      paymentStatus: this.paymentStatus,
-      balance: this.balance,
-      remarks: this.remarks,
-      updatedBy: this.username,
-    };
-
-    this.purchaseService.addPurchase(payload).subscribe({
+    this.payload.updatedBy = this.username;
+    console.log(this.payload);
+    
+    this.purchaseService.addPurchase(this.payload).subscribe({
       next: () => {
         this.message = '✅ Purchase added successfully!';
         this.resetForm();
@@ -107,17 +115,22 @@ export class AddPurchaseComponent {
 
   /** 🧹 Reset form fields */
   resetForm() {
-    this.phoneNumber = '';
-    this.customerName = '';
-    this.email = '';
-    this.address = '';
-    this.price = 0;
-    this.paymentMethod = '';
-    this.paymentStatus = 'PAID';
-    this.balance = 0;
-    this.remarks = '';
-    this.customerExists = false;
-    this.customerId = null;
+    this.customer = {
+      id: 0,
+      customerName: '',
+      phoneNumber: '',
+      email: '',
+      address: ''
+    }
+    this.payload = {
+      customer:this.customer,
+      price: 0,
+      advancePaid: 0,
+      paymentMethod: '',
+      paymentStatus: 'PAID',
+      remarks: '',
+      updatedBy: ''    
+    }
   }
 
   getUserName() {

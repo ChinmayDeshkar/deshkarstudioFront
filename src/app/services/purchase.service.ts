@@ -36,6 +36,8 @@ export class PurchaseService {
 
   /** ✅ Add purchase for a customer */
   addPurchase(payload: any): Observable<any> {
+    console.log("Payload: " + payload.toString());
+    
     return this.http.post(`${environment.apiUrl}/purchases/add`, payload, {
       headers: { Authorization: `Bearer ${this.getToken()}`},
     });
@@ -59,5 +61,9 @@ export class PurchaseService {
     headers: { Authorization: `Bearer ${this.getToken()}` }
   });
 }
+
+updatePurchase(id: number, data: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrl}/update/${id}`, data, { headers: this.getHeaders() });
+  }
 
 }

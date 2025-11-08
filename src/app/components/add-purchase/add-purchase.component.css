@@ -1,0 +1,32 @@
+.add-purchase-page {
+  background: linear-gradient(135deg, #f8f9fa, #e9f3ff);
+  min-height: 100vh;
+}
+
+.text-gradient {
+  background: linear-gradient(45deg, #007bff, #6610f2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-gradient {
+  background: linear-gradient(45deg, #007bff, #00c6ff);
+  color: white;
+  font-weight: 600;
+  border: none;
+  transition: 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

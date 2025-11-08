@@ -1,20 +1,40 @@
-.container {
-  max-width: 900px;
-  margin: auto;
+.purchase-report-page {
+  background: linear-gradient(135deg, #f3f6ff, #e0f7ff);
+  min-height: 100vh;
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 15px;
+.text-gradient {
+  background: linear-gradient(45deg, #007bff, #00c6ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.filters .btn.active {
-  background-color: #0056b3;
-  color: white;
+.btn-outline-primary.active {
+  background-color: #007bff;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
 }
 
-.date-range input {
-  width: 150px;
+.table thead th {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #eef7ff;
+  transition: 0.2s;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.5em 0.8em;
+}
+
+.fade-in {
+  animation: fadeIn 0.7s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
