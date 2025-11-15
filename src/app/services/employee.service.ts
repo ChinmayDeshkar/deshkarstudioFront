@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'   // 👈 ensures it's globally injectable
 })
 export class EmployeeService {
-  private baseUrl = 'http://localhost:8080/api/admin'; // adjust if needed
 
   constructor(private http: HttpClient) {}
 
@@ -15,7 +15,7 @@ export class EmployeeService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<any[]>(`${this.baseUrl}/all-employee`, { headers });
+    return this.http.get<any[]>(`${environment.apiUrl}/all-employee`, { headers });
   }
 
   updateEmployee(employee: any): Observable<any> {
@@ -24,6 +24,6 @@ export class EmployeeService {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.put(`${this.baseUrl}/update-employee/${employee.id}`, employee, { headers });
+    return this.http.put(`${environment.apiUrl}/update-employee/${employee.id}`, employee, { headers });
   }
 }

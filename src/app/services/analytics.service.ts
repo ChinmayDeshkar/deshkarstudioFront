@@ -5,7 +5,6 @@ import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-  private baseUrl = 'http://localhost:8080/api/purchases';
 
   constructor(private http: HttpClient) {}
 
