@@ -1,0 +1,28 @@
+# Ignore node modules (Vercel installs fresh)
+node_modules/
+
+# Ignore Angular build output (Vercel builds itself)
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# IDE/project files
+.vscode/
+.idea/
+
+# Git files
+.git/
+.gitignore
+
+# Temp files
+temp/
+tmp/
+*.tmp
