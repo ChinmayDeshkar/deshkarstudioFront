@@ -31,8 +31,6 @@ export class TaskpageComponent implements OnInit {
       headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
     }).subscribe({
       next: (res) => {
-        console.log(res);
-        
         this.tasks = res;
         this.loading = false;
       },
@@ -62,7 +60,6 @@ openStatusModal(task: any, type: 'payment' | 'order') {
         next: (res) => {
           this.selectedTask.paymentStatus = this.newStatus;
           this.closeModal();
-          console.log(res.Message);
         },
         error: (err) => console.error('Error updating payment status', err)
       });
@@ -71,7 +68,6 @@ openStatusModal(task: any, type: 'payment' | 'order') {
         next: (res) => {
           this.selectedTask.orderStatus = this.newStatus;
           this.closeModal();
-          console.log(res.Message);
         },
         error: (err) => console.error('Error updating order status', err)
       });
@@ -86,8 +82,6 @@ openStatusModal(task: any, type: 'payment' | 'order') {
 
 
   openPurchaseDetails(purchaseId: number) {
-    console.log(purchaseId + "Navigating now");
-    
     this.router.navigate(['/purchase-details', purchaseId]);
   }
 

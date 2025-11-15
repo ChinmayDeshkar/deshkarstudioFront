@@ -18,11 +18,6 @@ export class PurchaseService {
   
   /** ✅ Check if customer exists by phone */
   checkCustomer(phoneNumber: string): Observable<any> {
-    console.log('Headers:', `Bearer ${this.getToken()}`);
-    console.log('Sending to backend:', {
-      url: `${environment.apiUrl}/customers/check?phoneNumber=${phoneNumber}`,
-      headers: this.getHeaders(),
-    });
     return this.http.get(`${environment.apiUrl}/customers/check?phoneNumber=${phoneNumber}`, {
       headers: { Authorization: `Bearer ${this.getToken()}`},
     });
@@ -30,9 +25,7 @@ export class PurchaseService {
   getToken() { return localStorage.getItem(this.tokenKey); }
 
   /** ✅ Add purchase for a customer */
-  addPurchase(payload: any): Observable<any> {
-    console.log("Payload: " + payload.toString());
-    
+  addPurchase(payload: any): Observable<any> {    
     return this.http.post(`${environment.apiUrl}/purchases/add`, payload, {
       headers: { Authorization: `Bearer ${this.getToken()}`},
     });

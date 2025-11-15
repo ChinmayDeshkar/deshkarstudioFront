@@ -9,8 +9,6 @@ export class AuthGuard implements CanActivate {
   canActivate(): Observable<boolean> {
     return this.auth.isLoggedIn().pipe(
       tap((isValid) => {
-        console.log('AuthGuard - isLoggedIn:', isValid);
-        
         if (!isValid) {
           localStorage.clear();
           this.router.navigate(['/login']);

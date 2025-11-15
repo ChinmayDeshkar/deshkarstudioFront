@@ -11,7 +11,6 @@ export class RoleGuard implements CanActivate {
 
     const expectedRoles: string[] = route.data['roles'];
     const role = this.auth.getRole(); // e.g. ROLE_ADMIN
-    console.log('RoleGuard checking role:', role, 'against expected roles:', expectedRoles);
     if (!expectedRoles || !role || !expectedRoles.includes(role)) {
       this.router.navigate(['/restricted']);
       return false;

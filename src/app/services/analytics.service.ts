@@ -10,9 +10,7 @@ export class AnalyticsService {
 
   /** Utility: Build headers with token */
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('auth_token'); // or sessionStorage
-    console.log("Heheheh : " + token);
-    
+    const token = localStorage.getItem('auth_token'); 
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
