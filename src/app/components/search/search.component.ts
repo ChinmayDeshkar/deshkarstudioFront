@@ -62,10 +62,14 @@ export class SearchComponent {
     this.purchaseSearched = true;
     const id = this.purchaseForm.value.purchaseId;
 
-    this.http.get(`${environment.apiUrl}/purchases/cust-id/${id}`, {headers : this.getHeaders()}).subscribe({
+    this.http.get(`${environment.apiUrl}/purchases/${id}`, {headers : this.getHeaders()}).subscribe({
       next: (res) => {
-        this.purchaseResult = res;
+        const result  = res;
+        this.purchaseResult = result;
         this.loading = false;
+        console.log(this.purchaseResult);
+        console.log(this.purchaseResult[0].advancePaid);
+        
       },
       error: () => {
         this.purchaseResult = null;
