@@ -13,6 +13,8 @@ import { PurchaseReportComponent } from './components/purchase-report/purchase-r
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { RestrictedPageComponent } from './components/restricted-page/restricted-page.component';
 import { TaskpageComponent } from './components/taskpage/taskpage.component';
+import { PurchaseDetailsComponent } from './components/purchase-details/purchase-details.component';
+import { SearchComponent } from './components/search/search.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -26,6 +28,8 @@ const routes: Routes = [
     { path: 'reset', component: ResetPasswordComponent },
     { path: 'restricted', component: RestrictedPageComponent },
     { path: 'task-page', component: TaskpageComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
+    { path: 'purchase-details/:id', component: PurchaseDetailsComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
+    { path: 'search', component: SearchComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
     { path: '**', redirectTo: '' }
 ];
 

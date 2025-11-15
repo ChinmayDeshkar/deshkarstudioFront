@@ -1,0 +1,27 @@
+.container {
+  max-width: 1000px;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f0f7ff;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.clickable-row {
+  transition: 0.2s;
+}
+
+.clickable-row:hover {
+  background-color: #eaf3ff !important;
+  transform: scale(1.01);
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 0.45em 0.6em;
+}
