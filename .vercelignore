@@ -26,10 +26,3 @@ Thumbs.db
 temp/
 tmp/
 *.tmp
-
-# Environment files (never upload secrets)
-environment.ts
-environment.prod.ts
-.env
-.env.local
-.env.*.local
