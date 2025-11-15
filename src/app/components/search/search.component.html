@@ -1,0 +1,231 @@
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="customer-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#customer"
+          type="button"
+          role="tab"
+        >
+          Search by Customer ID
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="purchase-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#purchase"
+          type="button"
+          role="tab"
+        >
+          Search by Purchase ID
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content mt-4">
+      <!-- ======================= Search by Customer ID ======================= -->
+      <div
+        class="tab-pane fade show active"
+        id="customer"
+        role="tabpanel"
+        aria-labelledby="customer-tab"
+      >
+        <form [formGroup]="customerForm" (ngSubmit)="searchByCustomerId()">
+          <div class="mb-3">
+            <label for="customerId" class="form-label fw-semibold">Customer ID</label>
+            <input
+              type="text"
+              id="customerId"
+              class="form-control"
+              placeholder="Enter Customer ID"
+              formControlName="customerId"
+            />
+            <div
+              class="text-danger mt-1 small"
+              *ngIf="customerForm.get('customerId')?.hasError('required') && customerForm.get('customerId')?.touched"
+            >
+              Customer ID is required.
+            </div>
+          </div>
+
+          <button
+            class="btn btn-primary w-100"
+            type="submit"
+            [disabled]="customerForm.invalid || loading"
+          >
+            <i class="bi bi-search me-2"></i> Search
+          </button>
+        </form>
+
+        <!-- Results -->
+        <div *ngIf="customerResult?.length" class="mt-4">
+          <h5 class="fw-bold mb-3">Purchases for Customer ID: {{ customerForm.value.customerId }}</h5>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Purchase ID</th>
+                  <th>Customer Name</th>
+                  <th>Price</th>
+                  <th>Payment Method</th>
+                  <th>Payment Status</th>
+                  <th>Order Status</th>
+                  <th>Created Date</th>
+                  <th>Updated By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let purchase of customerResult"
+                  (click)="openPurchaseDetails(purchase.purchaseId)"
+                  class="clickable-row"
+                >
+                  <td>{{ purchase.purchaseId }}</td>
+                  <td>{{ purchase.customer?.customerName }}</td>
+                  <td>₹{{ purchase.price }}</td>
+                  <td>{{ purchase.paymentMethod }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [ngClass]="{
+                        'bg-success': purchase.paymentStatus === 'PAID',
+                        'bg-warning': purchase.paymentStatus === 'PENDING'
+                      }"
+                    >
+                      {{ purchase.paymentStatus }}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      class="badge"
+                      [ngClass]="{
+                        'bg-info': purchase.orderStatus === 'PROCESSING',
+                        'bg-success': purchase.orderStatus === 'DELIVERED',
+                        'bg-danger': purchase.orderStatus === 'CANCELLED'
+                      }"
+                    >
+                      {{ purchase.orderStatus }}
+                    </span>
+                  </td>
+                  <td>{{ purchase.createdDate }}</td>
+                  <td>{{ purchase.updatedBy }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="customerResult?.length === 0" class="alert alert-info mt-3">
+          No purchases found for this customer.
+        </div>
+      </div>
+
+      <!-- ======================= Search by Purchase ID ======================= -->
+      <div
+        class="tab-pane fade"
+        id="purchase"
+        role="tabpanel"
+        aria-labelledby="purchase-tab"
+      >
+        <form [formGroup]="purchaseForm" (ngSubmit)="searchByPurchaseId()">
+          <div class="mb-3">
+            <label for="purchaseId" class="form-label fw-semibold">Purchase ID</label>
+            <input
+              type="text"
+              id="purchaseId"
+              class="form-control"
+              placeholder="Enter Purchase ID"
+              formControlName="purchaseId"
+            />
+            <div
+              class="text-danger mt-1 small"
+              *ngIf="purchaseForm.get('purchaseId')?.hasError('required') && purchaseForm.get('purchaseId')?.touched"
+            >
+              Purchase ID is required.
+            </div>
+          </div>
+
+          <button
+            class="btn btn-success w-100"
+            type="submit"
+            [disabled]="purchaseForm.invalid || loading"
+          >
+            <i class="bi bi-search me-2"></i> Search
+          </button>
+        </form>
+
+        <!-- Result Table for Purchase -->
+        <div *ngIf="purchaseResult" class="mt-4">
+          <h5 class="fw-bold mb-3">Purchase Details</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Purchase ID</th>
+                  <th>Customer Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Price</th>
+                  <th>Payment Method</th>
+                  <th>Payment Status</th>
+                  <th>Order Status</th>
+                  <th>Advance</th>
+                  <th>Balance</th>
+                  <th>Created Date</th>
+                  <th>Updated By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr (click)="openPurchaseDetails(purchaseResult.purchaseId)" class="clickable-row">
+                  <td>{{ purchaseResult.purchaseId }}</td>
+                  <td>{{ purchaseResult.customer?.customerName }}</td>
+                  <td>{{ purchaseResult.customer?.email }}</td>
+                  <td>{{ purchaseResult.customer?.phoneNumber }}</td>
+                  <td>₹{{ purchaseResult.price }}</td>
+                  <td>{{ purchaseResult.paymentMethod }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [ngClass]="{
+                        'bg-success': purchaseResult.paymentStatus === 'PAID',
+                        'bg-warning': purchaseResult.paymentStatus === 'PENDING'
+                      }"
+                    >
+                      {{ purchaseResult.paymentStatus }}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      class="badge"
+                      [ngClass]="{
+                        'bg-info': purchaseResult.orderStatus === 'PROCESSING',
+                        'bg-success': purchaseResult.orderStatus === 'DELIVERED',
+                        'bg-danger': purchaseResult.orderStatus === 'CANCELLED'
+                      }"
+                    >
+                      {{ purchaseResult.orderStatus }}
+                    </span>
+                  </td>
+                  <td>{{ purchaseResult.advancePaid }}</td>
+                  <td>{{ purchaseResult.balance }}</td>
+                  <td>{{ purchaseResult.createdDate }}</td>
+                  <td>{{ purchaseResult.updatedBy }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="!purchaseResult && purchaseSearched" class="alert alert-danger mt-3">
+          Purchase not found.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TaskService } from 'src/app/services/task.service';
+import { Router } from '@angular/router';
 
 declare var bootstrap: any;
 
@@ -13,12 +14,12 @@ declare var bootstrap: any;
 export class TaskpageComponent implements OnInit {
   tasks: any[] = [];
   loading = false;
-  isAdmin = true; // Example, replace with your role check
+  isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
 
   selectedTask: any = null;
   statusType: 'payment' | 'order' = 'payment';
   newStatus: string = '';
-  constructor(private http: HttpClient, private taskService: TaskService) {}
+  constructor(private http: HttpClient, private taskService: TaskService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTasks();
@@ -81,6 +82,13 @@ openStatusModal(task: any, type: 'payment' | 'order') {
     const modalEl = document.getElementById('statusModal');
     const modal = bootstrap.Modal.getInstance(modalEl);
     modal.hide();
+  }
+
+
+  openPurchaseDetails(purchaseId: number) {
+    console.log(purchaseId + "Navigating now");
+    
+    this.router.navigate(['/purchase-details', purchaseId]);
   }
 
 }

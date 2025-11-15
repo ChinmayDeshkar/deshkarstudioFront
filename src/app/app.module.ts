@@ -19,9 +19,11 @@ import { AnalyticsDashboardComponent } from './components/analytics-dashboard/an
 import { RestrictedPageComponent } from './components/restricted-page/restricted-page.component';
 import { TaskpageComponent } from './components/taskpage/taskpage.component';
 import { RecentTasksComponent } from './components/recent-tasks/recent-tasks.component';
+import { PurchaseDetailsComponent } from './components/purchase-details/purchase-details.component';
+import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent, ResetPasswordComponent, AnalyticsDashboardComponent, RestrictedPageComponent, TaskpageComponent, RecentTasksComponent],
+  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent, ResetPasswordComponent, AnalyticsDashboardComponent, RestrictedPageComponent, TaskpageComponent, RecentTasksComponent, PurchaseDetailsComponent, SearchComponent],
   imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ReactiveFormsModule,NgChartsModule],
   bootstrap: [AppComponent]
 })

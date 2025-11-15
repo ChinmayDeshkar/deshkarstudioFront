@@ -10,6 +10,7 @@ export class RecentTasksComponent implements OnInit {
 
   tasks: any[] = [];
   loading = true;
+  isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
 
   selectedTask: any = null;
   statusType: 'payment' | 'order' = 'payment';

@@ -27,11 +27,6 @@ export class PurchaseService {
       headers: { Authorization: `Bearer ${this.getToken()}`},
     });
   }
-  // checkCustomer(phoneNumber: string): Observable<any> {
-  //   return this.http.get(`${environment.apiUrl}/customers/check?phoneNumber=${phoneNumber}`, 
-  //     { headers: { Authorization: `Bearer ${this.getToken()}`},});
-  // }
-
   getToken() { return localStorage.getItem(this.tokenKey); }
 
   /** ✅ Add purchase for a customer */
@@ -63,7 +58,21 @@ export class PurchaseService {
 }
 
 updatePurchase(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${environment.apiUrl}/update/${id}`, data, { headers: this.getHeaders() });
+  data.updatedBy = localStorage.getItem('username');
+    return this.http.put<any>(`${environment.apiUrl}/purchases/update/${id}`, data, { headers: this.getHeaders() });
   }
+
+   getPurchaseById(id: number) {
+    return this.http.get<any>(`${environment.apiUrl}/purchases/${id}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+//   updatePurchase(purchase: any) {
+//     return this.http.put(`${environment.apiUrl}/update/${purchase.purchaseId}`, purchase);
+//   }
+//   updatePurchase(id: number, data: any) {
+//   return this.http.put(`${this.baseUrl}/update/${id}`, data);
+// }
 
 }

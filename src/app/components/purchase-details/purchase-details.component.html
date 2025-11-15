@@ -1,0 +1,120 @@
+<div class="container py-5" *ngIf="purchase">
+  <div class="card shadow-lg border-0 p-4 rounded-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="fw-bold text-primary m-0">
+        <i class="bi bi-pencil-square me-2"></i> Edit Purchase #{{ purchase.purchaseId }}
+      </h3>
+      <button class="btn btn-outline-secondary btn-sm rounded-pill" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+    </div>
+
+    <form (ngSubmit)="updatePurchase()">
+      <!-- Customer Info -->
+      <div class="card mb-4 border-0 bg-light p-3 rounded-3">
+        <h5 class="fw-semibold text-secondary mb-3">
+          <i class="bi bi-person-circle me-2"></i> Customer Details
+        </h5>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Name</label>
+            <input type="text" class="form-control" [(ngModel)]="purchase.customer.customerName" name="customerName" readonly />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Email</label>
+            <input type="email" class="form-control" [(ngModel)]="purchase.customer.email" name="email" readonly />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Phone</label>
+            <input type="text" class="form-control" [(ngModel)]="purchase.customer.phoneNumber" name="phoneNumber" readonly />
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-medium">Address</label>
+            <textarea class="form-control" [(ngModel)]="purchase.customer.address" name="address" rows="2" readonly></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase Info -->
+      <div class="card mb-4 border-0 bg-light p-3 rounded-3">
+        <h5 class="fw-semibold text-secondary mb-3">
+          <i class="bi bi-cash-stack me-2"></i> Purchase Details
+        </h5>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Price (₹)</label>
+            <input type="number" class="form-control" [(ngModel)]="purchase.price" name="price" (input)="calculateBalance()" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Advance Paid (₹)</label>
+            <input type="number" class="form-control" [(ngModel)]="purchase.advancePaid" name="advancePaid" (input)="calculateBalance()" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Balance (₹)</label>
+            <input type="number" class="form-control" [(ngModel)]="purchase.balance" name="balance" readonly />
+          </div>
+        </div>
+
+        <div class="row g-3 mt-3">
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Payment Method</label>
+            <select class="form-select" [(ngModel)]="purchase.paymentMethod" name="paymentMethod">
+              <option value="Cash">Cash</option>
+              <option value="Online">Online</option>
+              <option value="Card">Card</option>
+              <option value="UPI">UPI</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Payment Status</label>
+            <select class="form-select" [(ngModel)]="purchase.paymentStatus" name="paymentStatus">
+              <option value="PAID">PAID</option>
+              <option value="PENDING">PENDING</option>
+              <option value="PARTIAL">PARTIAL</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-medium">Order Status</label>
+            <select class="form-select" [(ngModel)]="purchase.orderStatus" name="orderStatus">
+              <option value="CREATED">CREATED</option>
+              <option value="PROCESSING">PROCESSING</option>
+              <option value="ON-HOLD">ON-HOLD</option>
+              <option value="DELIVERED">DELIVERED</option>
+              <option value="COMPLETED">COMPLETED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remarks -->
+      <div class="mb-4">
+        <label class="form-label fw-medium">Remarks</label>
+        <textarea class="form-control" rows="3" [(ngModel)]="purchase.remarks" name="remarks" placeholder="Enter remarks or notes..."></textarea>
+      </div>
+
+      <!-- Metadata -->
+      <div class="row g-3 text-muted small mb-4">
+        <div class="col-md-4">
+          <i class="bi bi-calendar-event me-1"></i> <b>Created:</b> {{ purchase.createdDate }}
+        </div>
+        <div class="col-md-4">
+          <i class="bi bi-clock-history me-1"></i> <b>Last Updated:</b> {{ purchase.updatedDate }}
+        </div>
+        <div class="col-md-4">
+          <i class="bi bi-person-badge me-1"></i> <b>Updated By:</b> {{ purchase.updatedBy }}
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="text-end">
+        <button type="submit" class="btn btn-success px-4 rounded-pill me-2">
+          <i class="bi bi-save2 me-2"></i> Update Purchase
+        </button>
+        <!-- <button type="button" class="btn btn-outline-danger px-4 rounded-pill" (click)="resetForm()">
+          <i class="bi bi-x-circle me-2"></i> Reset
+        </button> -->
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<section *ngIf="isAdmin">
+<section>
   <div class="container-fluid py-5 task-page">
     <div class="card shadow-lg border-0 p-4 mx-auto" style="max-width: 1200px;">
       <h2 class="text-center text-gradient fw-bold mb-4">
@@ -18,8 +18,8 @@
               <th>Purchase ID</th>
               <th>Customer Name</th>
               <th>Phone</th>
-              <th>Price (₹)</th>
-              <th>Balance</th>
+              <th *ngIf="isAdmin">Price (₹)</th>
+              <th *ngIf="isAdmin">Balance</th>
               <th>Payment Status</th>
               <th>Order Status</th>
               <th>Remarks</th>
@@ -27,45 +27,54 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let t of tasks; let i = index">
-              
-              <td>{{ t.purchaseId }}</td>
-              <td>{{ t.customerName }}</td>
-              <td>{{ t.phoneNumber }}</td>
-              <td class="fw-semibold text-success">{{ t.price | number }}</td>
-              <td [ngClass]="t.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'">
-                {{ t.balance }}
-              </td>
-                <td>
-                <span
-                    class="badge"
-                    [class.bg-success]="t.paymentStatus === 'PAID'"
-                    [class.bg-warning]="t.paymentStatus !== 'PAID'"
-                    style="cursor:pointer"
-                    (click)="openStatusModal(t, 'payment')"
-                >
-                    {{ t.paymentStatus }}
-                </span>
-                </td>
+  <tr
+    *ngFor="let t of tasks; let i = index"
+    class="table-row-clickable"
+    (click)="openPurchaseDetails(t.purchaseId)"
+  >
+    <td>{{ t.purchaseId }}</td>
+    <td>{{ t.customerName }}</td>
+    <td>{{ t.phoneNumber }}</td>
+    <td class="fw-semibold text-success" *ngIf="isAdmin">{{ t.price | number }}</td>
+    <td
+      [ngClass]="t.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'"
+      *ngIf="isAdmin"
+    >
+      {{ t.balance }}
+    </td>
+    <td>
+      <span
+        class="badge"
+        [class.bg-success]="t.paymentStatus === 'PAID'"
+        [class.bg-warning]="t.paymentStatus !== 'PAID'"
+      >
+        {{ t.paymentStatus }}
+      </span>
+    </td>
 
-                <td>
-                <span
-                    class="badge"
-                    [class.bg-secondary]="t.orderStatus === 'CREATED'"
-                    [class.bg-danger]="t.orderStatus === 'CANCELLED'"
-                    [class.bg-warning]="t.orderStatus === 'PROCESSING' || t.orderStatus === 'DELIVERED'"
-                    [class.bg-dark]="t.orderStatus == 'ON-HOLD' && t.orderStatus !== 'CREATED' && t.orderStatus !== 'DELIVERED'"
-                    style="cursor:pointer"
-                    (click)="openStatusModal(t, 'order')"
-                >
-                    {{ t.orderStatus }}
-                </span>
-                </td>
+    <td>
+      <span
+        class="badge"
+        [class.bg-secondary]="t.orderStatus === 'CREATED'"
+        [class.bg-danger]="t.orderStatus === 'CANCELLED'"
+        [class.bg-warning]="
+          t.orderStatus === 'PROCESSING' || t.orderStatus === 'DELIVERED'
+        "
+        [class.bg-dark]="t.orderStatus == 'ON-HOLD'"
+      >
+        {{ t.orderStatus }}
+      </span>
+    </td>
 
-              <td>{{ t.remarks || '-' }}</td>
-              <td>{{ t.dte_created | date:'medium' }}</td>
-            </tr>
-          </tbody>
+    <!-- Truncated Remarks -->
+    <td [title]="t.remarks" class="text-truncate remark-cell">
+      {{ t.remarks?.length > 20 ? (t.remarks | slice: 0:20) + '...' : (t.remarks || '-') }}
+    </td>
+
+    <td>{{ t.dte_created | date: 'medium' }}</td>
+  </tr>
+</tbody>
+
         </table>
       </div>
 
