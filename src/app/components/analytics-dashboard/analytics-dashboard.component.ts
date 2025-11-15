@@ -1,6 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { ChartData, ChartOptions } from 'chart.js';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexStroke,
+  ApexTitleSubtitle,
+  ApexLegend,
+  ChartComponent
+} from 'ng-apexcharts';
 import { AnalyticsService } from 'src/app/services/analytics.service';
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  dataLabels: ApexDataLabels;
+  stroke: ApexStroke;
+  title: ApexTitleSubtitle;
+  legend: ApexLegend;
+};
 
 @Component({
   selector: 'app-analytics-dashboard',
@@ -9,16 +28,21 @@ import { AnalyticsService } from 'src/app/services/analytics.service';
 })
 export class AnalyticsDashboardComponent implements OnInit {
 
-  selectedView = 'year'; // year | month | day
-  chartData!: ChartData<'bar'>;
-  chartOptions: ChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: { display: true, text: 'Revenue Analytics' }
-    }
+  @ViewChild("chart") chart!: ChartComponent;
+
+  // IMPORTANT: Initialize with valid defaults (not undefined)
+  public chartOptions: ChartOptions = {
+    series: [],
+    chart: { type: "bar", height: 420 },
+    xaxis: { categories: [] },
+    dataLabels: { enabled: false },
+    stroke: { show: true, width: 2 },
+    title: { text: "Revenue Analytics", align: "center" },
+    legend: { position: "top" }
   };
+
   loading = false;
+  selectedView: 'year' | 'month' | 'day' = 'year';
 
   constructor(private analyticsService: AnalyticsService) {}
 
@@ -39,17 +63,27 @@ export class AnalyticsDashboardComponent implements OnInit {
 
     apiCall.subscribe({
       next: (data: any[]) => {
-        this.chartData = {
-          labels: data.map(d => d.label),
-          datasets: [
-            { label: 'Income', data: data.map(d => d.income), backgroundColor: '#4CAF50' },
-            { label: 'Balance', data: data.map(d => d.balance), backgroundColor: '#FF9800' },
-            { label: 'Transactions', data: data.map(d => d.transactions), backgroundColor: '#2196F3' }
-          ]
-        };
+        this.updateChart(data);
         this.loading = false;
       },
       error: () => this.loading = false
     });
   }
+
+  updateChart(data: any[]) {
+    this.chartOptions = {
+      ...this.chartOptions, // keep other defaults
+
+      series: [
+        { name: 'Income', data: data.map(d => d.income) },
+        { name: 'Balance', data: data.map(d => d.balance) },
+        { name: 'Transactions', data: data.map(d => d.transactions) }
+      ],
+
+      xaxis: {
+        categories: data.map(d => d.label)
+      }
+    };
+  }
+
 }
