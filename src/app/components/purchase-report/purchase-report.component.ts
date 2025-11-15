@@ -28,9 +28,7 @@ export class PurchaseReportComponent implements OnInit {
   ngOnInit(): void {
     this.loadTodayPurchases();
     this.isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
-    this.isEmployee = localStorage.getItem('role') === 'ROLE_EMPLOYEE';
-    console.log("Role is " + this.isEmployee);
-    
+    this.isEmployee = localStorage.getItem('role') === 'ROLE_EMPLOYEE';    
   }
 
   loadTodayPurchases() {
@@ -49,9 +47,7 @@ export class PurchaseReportComponent implements OnInit {
     this.purchaseService.getMonthlyPurchases().subscribe({
       next: (data) => {
         this.purchases = data;
-        this.loading = false;
-        console.log(data);
-        
+        this.loading = false;        
       },
       error: () => this.loading = false
     });

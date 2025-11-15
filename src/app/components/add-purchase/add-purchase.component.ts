@@ -58,7 +58,6 @@ export class AddPurchaseComponent {
 
     this.purchaseService.checkCustomer(this.customer.phoneNumber).subscribe({
       next: (res) => {
-        console.log('Response from checkCustomer:', res);
         if (res.exists === true) {
           this.customerExists = true;
           this.customer.id = res.id;
@@ -84,11 +83,7 @@ export class AddPurchaseComponent {
   }
 
   /** 💾 Submit purchase */
-  submit() {
-    console.log(this.customer.phoneNumber);
-    console.log(this.payload.price);
-    console.log(this.payload.paymentMethod);
-    
+  submit() {  
     if (!this.customer.phoneNumber || !this.payload.price || !this.payload.paymentMethod) {
       this.message = '⚠️ Please fill all required fields.';
       return;
@@ -98,7 +93,6 @@ export class AddPurchaseComponent {
     this.message = '';
 
     this.payload.updatedBy = this.username;
-    console.log(this.payload);
     
     this.purchaseService.addPurchase(this.payload).subscribe({
       next: () => {
@@ -136,7 +130,6 @@ export class AddPurchaseComponent {
   getUserName() {
     this.authService.getProfile().subscribe({
       next: (data: any) => {
-        console.log('User Data:', data);
         this.username = data.username;
       },
       error: () => {

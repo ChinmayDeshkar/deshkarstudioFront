@@ -25,10 +25,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.auth.getProfile().subscribe({
-      next: (data: any) => {
-        console.log('Profile data:', data);
-        console.log(data.User.username);
-        
+      next: (data: any) => {        
         // Patch only the fields we want to display
         this.profileForm.patchValue({
           username: data.User.username,

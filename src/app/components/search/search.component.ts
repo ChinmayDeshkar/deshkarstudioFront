@@ -66,10 +66,7 @@ export class SearchComponent {
       next: (res) => {
         const result  = res;
         this.purchaseResult = result;
-        this.loading = false;
-        console.log(this.purchaseResult);
-        console.log(this.purchaseResult[0].advancePaid);
-        
+        this.loading = false;        
       },
       error: () => {
         this.purchaseResult = null;

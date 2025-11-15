@@ -43,13 +43,11 @@ export class AuthService {
   isLoggedIn(): Observable<boolean> {
     const token = this.getToken();
     if (!token) {
-      console.log('No token found');
       return of(false);
     }
 
     return this.http.post<any>(`${environment.apiUrl}/auth/validate-token`, { token }).pipe(
       map((res) => {
-        console.log('Token valid:', res);
         return res.isValid === true;
       }),
       catchError((err) => {
@@ -63,8 +61,6 @@ export class AuthService {
   
 
   getProfile() {
-    console.log(this.getToken());
-    
     return this.http.get(`${environment.apiUrl}/user/profile`, {
       headers: { Authorization: `Bearer ${this.getToken()}` }
     });

@@ -67,8 +67,8 @@
     </td>
 
     <!-- Truncated Remarks -->
-    <td [title]="t.remarks" class="text-truncate remark-cell">
-      {{ t.remarks?.length > 20 ? (t.remarks | slice: 0:20) + '...' : (t.remarks || '-') }}
+    <td [title]="t.remark" class="text-truncate remark-cell">
+      {{ t.remark?.length > 20 ? (t.remark | slice: 0:20) + '...' : (t.remark || '-') }}
     </td>
 
     <td>{{ t.dte_created | date: 'medium' }}</td>

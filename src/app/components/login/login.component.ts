@@ -22,18 +22,10 @@ export class LoginComponent {
 
   constructor(private auth: AuthService, private router: Router) {}
 
-  onSubmit(){
-    console.log("OnSubmit()");
-    
+  onSubmit(){    
     this.auth.login(this.username, this.password).subscribe({
-      next: (res:any) => {
-        console.log("Message: " + res.Message);
-        console.log("token: " + res.AuthToken);
-        console.log("Role: " + res.Role);
-        
-        if(res.AuthToken != undefined){
-          console.log("Auth Token verified!!!");
-          
+      next: (res:any) => {        
+        if(res.AuthToken != undefined){          
           localStorage.setItem('auth_token', res.AuthToken);
           localStorage.setItem('role', res.Role);
           this.auth.loginSuccess(res.AuthToken, res.Role, res.Username);
