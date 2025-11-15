@@ -32,7 +32,7 @@ export class TaskService {
   }
 
   getRecentTasks() {
-    return this.http.get<any[]>('http://localhost:8080/api/purchases/recent-tasks',
+    return this.http.get<any[]>(`${environment.apiUrl}/purchases/recent-tasks`,
       {headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }}
     );
   }

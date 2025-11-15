@@ -5,7 +5,6 @@ import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
-  // private baseUrl = 'http://localhost:8080/api/customers';
 
   constructor(private http: HttpClient) {}
 
