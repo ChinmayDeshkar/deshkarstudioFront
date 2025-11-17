@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PurchaseService } from '../../services/purchase.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
-declare var bootstrap: any; 
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-purchase-report',
@@ -13,94 +12,91 @@ export class PurchaseReportComponent implements OnInit {
 
   purchases: any[] = [];
   loading = false;
+
+  // Filters
+  selectedFilter: string = 'today';
   startDate: string = '';
   endDate: string = '';
-  selectedFilter: string = 'today';
-  selectedPurchase: any = null;
-  isAdmin: boolean = false;
-  isEmployee: boolean = false;
-  editData: any = {
-    extraPaid: 0
-  };
+
+  // Roles
+  isAdmin = false;
+  isEmployee = false;
 
   constructor(private purchaseService: PurchaseService) {}
 
   ngOnInit(): void {
-    this.loadTodayPurchases();
     this.isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
-    this.isEmployee = localStorage.getItem('role') === 'ROLE_EMPLOYEE';    
+    this.isEmployee = localStorage.getItem('role') === 'ROLE_EMPLOYEE';
+
+    this.loadTodayPurchases();
   }
 
+  /** Convert backend date "dd-MM-yyyy HH:mm:ss" to JS date */
+  formatDate(dateStr: string): Date {
+    if (!dateStr) return new Date();
+
+    const [datePart, timePart] = dateStr.split(" ");
+    const [day, month, year] = datePart.split("-").map(Number);
+    const [hour, minutes, seconds] = timePart.split(":").map(Number);
+
+    return new Date(year, month - 1, day, hour, minutes, seconds);
+  }
+
+  /** Convert all dates in list */
+  normalizeDates(list: any[]) {
+    return list.map(p => ({
+      ...p,
+      createdDate: this.formatDate(p.createdDate),
+      updatedDate: this.formatDate(p.updatedDate)
+    }));
+  }
+
+  /** Today API */
   loadTodayPurchases() {
     this.loading = true;
     this.purchaseService.getTodayPurchases().subscribe({
       next: (data) => {
-        this.purchases = data;
+        this.purchases = this.normalizeDates(data);
         this.loading = false;
       },
       error: () => this.loading = false
     });
   }
 
+  /** Monthly API */
   loadMonthlyPurchases() {
     this.loading = true;
     this.purchaseService.getMonthlyPurchases().subscribe({
       next: (data) => {
-        this.purchases = data;
-        this.loading = false;        
-      },
-      error: () => this.loading = false
-    });
-  }
-
-  loadRangePurchases() {
-    if (!this.startDate || !this.endDate) {
-      alert('Please select both start and end dates');
-      return;
-    }
-    this.loading = true;
-    this.purchaseService.getPurchasesByRange(this.startDate, this.endDate).subscribe({
-      next: (data) => {
-        this.purchases = data;
+        this.purchases = this.normalizeDates(data);
         this.loading = false;
       },
       error: () => this.loading = false
     });
   }
 
+  /** Custom Range API */
+  loadRangePurchases() {
+    if (!this.startDate || !this.endDate) {
+      alert('Please select start and end date');
+      return;
+    }
+
+    this.loading = true;
+    this.purchaseService.getPurchasesByRange(this.startDate, this.endDate).subscribe({
+      next: (data) => {
+        this.purchases = this.normalizeDates(data);
+        this.loading = false;
+      },
+      error: () => this.loading = false
+    });
+  }
+
+  /** Filter Change */
   onFilterChange(filter: string) {
     this.selectedFilter = filter;
+
     if (filter === 'today') this.loadTodayPurchases();
     else if (filter === 'month') this.loadMonthlyPurchases();
-  }
-
-  openEditModal(purchase: any) {
-    this.selectedPurchase = purchase;
-    this.editData = { ...purchase };
-    const modal = new bootstrap.Modal(document.getElementById('editModal'));
-    modal.show();
-  }
-
-  updatePurchase() {
-    if (!this.selectedPurchase) return;
-
-    this.purchaseService
-      .updatePurchase(this.selectedPurchase.purchaseId, this.editData)
-      .subscribe({
-        next: (res) => {
-          const index = this.purchases.findIndex(
-            (p) => p.purchaseId === res.purchaseId
-          );
-          if (index > -1) this.purchases[index] = res;
-
-          const modalInstance = bootstrap.Modal.getInstance(
-            document.getElementById('editModal')
-          );
-          modalInstance?.hide();
-        },
-        error: (err: HttpErrorResponse) => {
-          console.error('Error updating purchase:', err);
-        }
-      });
   }
 }

@@ -64,7 +64,7 @@
         </form>
 
         <!-- Results -->
-        <div *ngIf="customerResult?.length" class="mt-4">
+        <div *ngIf="customerResult.length" class="mt-4">
           <h5 class="fw-bold mb-3">Purchases for Customer ID: {{ customerForm.value.customerId }}</h5>
           <div class="table-responsive">
             <table class="table table-hover align-middle table-bordered">
@@ -121,7 +121,7 @@
           </div>
         </div>
 
-        <div *ngIf="customerResult?.length === 0" class="alert alert-info mt-3">
+        <div *ngIf="customerResult.length === 0" class="alert alert-info mt-3">
           No purchases found for this customer.
         </div>
       </div>
