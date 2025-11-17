@@ -20,7 +20,7 @@ const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'signup', component: SignupComponent },
     { path: 'admin', component: AdminComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
-    { path: 'employee', component: EmployeeComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
+    // { path: 'employee', component: EmployeeComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
     { path: '', component: HomeComponent, canActivate:[AuthGuard] },
     { path: 'profile', component: ProfileComponent, canActivate:[AuthGuard] },
     { path: 'add-purchase', component: AddPurchaseComponent, canActivate:[AuthGuard] },

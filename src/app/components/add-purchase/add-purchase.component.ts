@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PurchaseService } from '../../services/purchase.service';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -7,134 +7,156 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './add-purchase.component.html',
   styleUrls: ['./add-purchase.component.css']
 })
-export class AddPurchaseComponent {
-  phoneNumber = '';
-  customerExists = false;
+export class AddPurchaseComponent implements OnInit {
+
   loading = false;
   message = '';
+  customerExists = false;
 
-  // Customer details
+  products: any[] = [];
+  total = 0;
+  username = '';
+
   customer = {
     id: 0,
     customerName: '',
     phoneNumber: '',
     email: '',
     address: ''
-  }
-  payload = {
-    customer:this.customer,
+  };
+
+  payload: any = {
+    customer: this.customer,
+    items: [],
     price: 0,
     advancePaid: 0,
+    balance: 0,
     paymentMethod: '',
-    paymentStatus: 'PAID',
+    paymentStatus: 'PENDING',
     remarks: '',
-    updatedBy: ''    
-  }
+    updatedBy: localStorage.getItem('username')
+  };
 
-  // Purchase details
-  price = 0;
-  paymentMethod = '';
-  paymentStatus = 'PAID';
-  advance = 0;
-  remarks = '';
+  constructor(
+    private purchaseService: PurchaseService,
+    private authService: AuthService
+  ) {}
 
-  username = localStorage.getItem('username') || '';
-  customerId: number | null = null;
-
-
-  constructor(private purchaseService: PurchaseService, private authService: AuthService) {}
-
-  oninit() {
+  ngOnInit(): void {
     this.getUserName();
+    this.loadProducts();
+    this.addItem();
   }
-  checkCustomer() {
+
+  getUserName(): void {
+    this.authService.getProfile().subscribe({
+      next: (data: any) => this.username = data.username,
+      error: () => this.message = 'Failed to load profile'
+    });
+  }
+
+  loadProducts(): void {
+    this.purchaseService.getAllProducts().subscribe(res => {
+      this.products = res;
+    });
+  }
+
+  checkCustomer(): void {
     if (!this.customer.phoneNumber) {
-      this.message = '⚠️ Please enter a phone number.';
+      this.message = 'Enter phone number';
       return;
     }
-
     this.loading = true;
-    this.message = '';
-
     this.purchaseService.checkCustomer(this.customer.phoneNumber).subscribe({
-      next: (res) => {
-        if (res.exists === true) {
+      next: (res: any) => {
+        if (res.exists) {
           this.customerExists = true;
-          this.customer.id = res.id;
-          this.customer.customerName = res.customerName;
-          this.customer.email = res.email;
-          this.customer.address = res.address;
-          this.message = '✅ Existing customer found! Details are locked.';
+          this.customer = res;
+          this.payload.customer = this.customer;
+          this.message = "Existing customer found";
         } else {
           this.customerExists = false;
-          this.customer.customerName = '';
-          this.customer.email = '';
-          this.customer.address = '';
-          this.message = '🆕 New customer — please fill details.';
+          this.message = "New customer – enter details";
         }
         this.loading = false;
       },
       error: () => {
+        this.message = "Error checking customer";
         this.loading = false;
-        this.customerExists = false;
-        this.message = '❌ Error checking customer.';
-      },
+      }
     });
   }
 
-  /** 💾 Submit purchase */
-  submit() {  
-    if (!this.customer.phoneNumber || !this.payload.price || !this.payload.paymentMethod) {
-      this.message = '⚠️ Please fill all required fields.';
-      return;
+  addItem(): void {
+    this.payload.items.push({
+      productId: null,
+      productName: '',
+      quantity: 1,
+      price: 0
+    });
+  }
+
+  removeItem(index: number): void {
+    this.payload.items.splice(index, 1);
+    this.updateTotal();
+  }
+
+  onProductSelect(item: any): void {
+    const selected = this.products.find(p => p.productId === item.productId);
+    if (selected) {
+      item.productName = selected.productName;
+      item.price = selected.price;
     }
+    this.updateTotal();
+  }
 
-    this.loading = true;
-    this.message = '';
+  updateTotal(): void {
+    this.total = this.payload.items.reduce((sum: number, item: any) =>
+      sum + (item.price || 0) * (item.quantity || 0), 0
+    );
+    this.payload.price = this.total;
+    this.updateBalance();
+  }
 
+  updateBalance(): void {
+    this.payload.balance = this.payload.price - (this.payload.advancePaid || 0);
+  }
+
+  submit(): void {
     this.payload.updatedBy = this.username;
-    
     this.purchaseService.addPurchase(this.payload).subscribe({
       next: () => {
-        this.message = '✅ Purchase added successfully!';
+        this.message = "Purchase added successfully!";
+        alert(this.message);
         this.resetForm();
-        this.loading = false;
       },
       error: () => {
-        this.message = '❌ Error adding purchase.';
-        this.loading = false;
-      },
+        this.message = "Error submitting purchase";
+        alert(this.message);
+      }
     });
   }
 
-  /** 🧹 Reset form fields */
-  resetForm() {
+  resetForm(): void {
     this.customer = {
       id: 0,
       customerName: '',
       phoneNumber: '',
       email: '',
       address: ''
-    }
+    };
     this.payload = {
-      customer:this.customer,
+      customer: this.customer,
+      items: [],
       price: 0,
       advancePaid: 0,
+      balance: 0,
       paymentMethod: '',
-      paymentStatus: 'PAID',
+      paymentStatus: 'PENDING',
       remarks: '',
-      updatedBy: ''    
-    }
-  }
-
-  getUserName() {
-    this.authService.getProfile().subscribe({
-      next: (data: any) => {
-        this.username = data.username;
-      },
-      error: () => {
-        this.message = 'Failed to load profile';
-      }
-    });
+      updatedBy: ''
+    };
+    this.total = 0;
+    this.addItem();
   }
 }

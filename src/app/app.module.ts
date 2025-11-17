@@ -21,10 +21,39 @@ import { RecentTasksComponent } from './components/recent-tasks/recent-tasks.com
 import { PurchaseDetailsComponent } from './components/purchase-details/purchase-details.component';
 import { SearchComponent } from './components/search/search.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { AddProductComponent } from './components/add-product/add-product.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SignupComponent, AdminComponent, EmployeeComponent, HomeComponent, ProfileComponent, NavbarComponent, AddPurchaseComponent, PurchaseReportComponent, ResetPasswordComponent, AnalyticsDashboardComponent, RestrictedPageComponent, TaskpageComponent, RecentTasksComponent, PurchaseDetailsComponent, SearchComponent],
-  imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ReactiveFormsModule,NgApexchartsModule],
-  bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    SignupComponent,
+    AdminComponent,
+    EmployeeComponent,
+    HomeComponent,
+    ProfileComponent,
+    NavbarComponent,
+    AddPurchaseComponent,
+    PurchaseReportComponent,
+    ResetPasswordComponent,
+    AnalyticsDashboardComponent,
+    RestrictedPageComponent,
+    TaskpageComponent,
+    RecentTasksComponent,
+    PurchaseDetailsComponent,
+    SearchComponent,
+    AddProductComponent,
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    NgApexchartsModule,
+    NgSelectModule
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

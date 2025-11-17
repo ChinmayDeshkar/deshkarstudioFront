@@ -1,16 +1,45 @@
 <div class="container mt-5">
   <h2 class="text-center mb-4">Employee Management</h2>
 
-  <div class="d-flex justify-content-between mb-3">
-    <input type="text" class="form-control w-50" placeholder="Search by name or username..." [(ngModel)]="searchTerm"
-      (input)="applyFilter()" />
-    <select class="form-select w-25" [(ngModel)]="filterStatus" (change)="applyFilter()">
-      <option value="all">All</option>
-      <option value="active">Active</option>
-      <option value="inactive">Inactive</option>
-    </select>
+  <!-- Top Bar: Search + Filter + Add -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <!-- Search Input -->
+    <input
+      type="text"
+      class="form-control w-50"
+      placeholder="Search by name or username..."
+      [(ngModel)]="searchTerm"
+      (input)="applyFilter()"
+    />
+
+    <div class="d-flex gap-2">
+
+      <!-- Filter Dropdown -->
+      <select
+        class="form-select"
+        style="width: 150px;"
+        [(ngModel)]="filterStatus"
+        (change)="applyFilter()"
+      >
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+
+      <!-- ADD EMPLOYEE BUTTON -->
+      <button
+        class="btn btn-success"
+        (click)="openAddEmployeeModal()"
+      >
+        <i class="bi bi-person-plus"></i> Add Employee
+      </button>
+
+    </div>
+
   </div>
 
+  <!-- Employee Table -->
   <table class="table table-hover table-bordered align-middle text-center">
     <thead class="table-dark">
       <tr>
@@ -48,7 +77,7 @@
 
   <p *ngIf="message" class="text-success text-center">{{ message }}</p>
 
-  <!-- Edit Modal -->
+  <!-- EDIT EMPLOYEE MODAL -->
   <div *ngIf="selectedEmployee" class="modal show d-block" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content shadow-lg border-0 rounded-3">
@@ -57,24 +86,24 @@
           <button type="button" class="btn-close btn-close-white" (click)="cancelEdit()"></button>
         </div>
         <div class="modal-body">
+
           <form>
             <input type="text" [(ngModel)]="selectedEmployee.firstName" name="firstName" placeholder="First Name"
-              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+              class="form-control mb-2">
 
             <input type="text" [(ngModel)]="selectedEmployee.lastName" name="lastName" placeholder="Last Name"
-              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+              class="form-control mb-2">
 
-            <input type="text" [(ngModel)]="selectedEmployee.email" name="email" placeholder="Email"
-              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+            <input type="email" [(ngModel)]="selectedEmployee.email" name="email" placeholder="Email"
+              class="form-control mb-2">
 
             <input type="text" [(ngModel)]="selectedEmployee.phone" name="phone" placeholder="Phone"
-              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+              class="form-control mb-2">
 
             <input type="number" [(ngModel)]="selectedEmployee.salary" name="salary" placeholder="Salary"
-              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+              class="form-control mb-2">
 
-            <select [(ngModel)]="selectedEmployee.active" name="active" class="form-select mb-3"
-              [disabled]="selectedEmployee.active === false">
+            <select [(ngModel)]="selectedEmployee.active" name="active" class="form-select mb-3">
               <option [ngValue]="true">Active</option>
               <option [ngValue]="false">Inactive</option>
             </select>
@@ -88,4 +117,44 @@
       </div>
     </div>
   </div>
+
+  <!-- ADD EMPLOYEE MODAL -->
+  <div *ngIf="showAddModal" class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content shadow-lg border-0 rounded-3">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Add New Employee</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeAddEmployeeModal()"></button>
+        </div>
+
+        <div class="modal-body">
+          <form>
+
+            <input type="text" class="form-control mb-2" placeholder="First Name"
+              [(ngModel)]="newEmployee.firstName" name="firstName">
+
+            <input type="text" class="form-control mb-2" placeholder="Last Name"
+              [(ngModel)]="newEmployee.lastName" name="lastName">
+
+            <input type="email" class="form-control mb-2" placeholder="Email"
+              [(ngModel)]="newEmployee.email" name="email">
+
+            <input type="text" class="form-control mb-2" placeholder="Phone"
+              [(ngModel)]="newEmployee.phone" name="phone">
+
+            <input type="number" class="form-control mb-2" placeholder="Salary"
+              [(ngModel)]="newEmployee.salary" name="salary">
+
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeAddEmployeeModal()">Cancel</button>
+          <button class="btn btn-success" (click)="createEmployee()">Add</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
