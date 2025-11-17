@@ -2,8 +2,8 @@
   <h2 class="text-center mb-4">Employee Management</h2>
 
   <div class="d-flex justify-content-between mb-3">
-    <input type="text" class="form-control w-50" placeholder="Search by name or username..."
-           [(ngModel)]="searchTerm" (input)="applyFilter()" />
+    <input type="text" class="form-control w-50" placeholder="Search by name or username..." [(ngModel)]="searchTerm"
+      (input)="applyFilter()" />
     <select class="form-select w-25" [(ngModel)]="filterStatus" (change)="applyFilter()">
       <option value="all">All</option>
       <option value="active">Active</option>
@@ -58,16 +58,28 @@
         </div>
         <div class="modal-body">
           <form>
-            <input type="text" [(ngModel)]="selectedEmployee.firstName" name="firstName" placeholder="First Name" class="form-control mb-2">
-            <input type="text" [(ngModel)]="selectedEmployee.lastName" name="lastName" placeholder="Last Name" class="form-control mb-2">
-            <input type="text" [(ngModel)]="selectedEmployee.email" name="email" placeholder="Email" class="form-control mb-2">
-            <input type="text" [(ngModel)]="selectedEmployee.phone" name="phone" placeholder="Phone" class="form-control mb-2">
-            <input type="number" [(ngModel)]="selectedEmployee.salary" name="salary" placeholder="Salary" class="form-control mb-2">
-            <select [(ngModel)]="selectedEmployee.active" name="active" class="form-select mb-3">
+            <input type="text" [(ngModel)]="selectedEmployee.firstName" name="firstName" placeholder="First Name"
+              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+
+            <input type="text" [(ngModel)]="selectedEmployee.lastName" name="lastName" placeholder="Last Name"
+              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+
+            <input type="text" [(ngModel)]="selectedEmployee.email" name="email" placeholder="Email"
+              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+
+            <input type="text" [(ngModel)]="selectedEmployee.phone" name="phone" placeholder="Phone"
+              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+
+            <input type="number" [(ngModel)]="selectedEmployee.salary" name="salary" placeholder="Salary"
+              class="form-control mb-2" [disabled]="selectedEmployee.active === false">
+
+            <select [(ngModel)]="selectedEmployee.active" name="active" class="form-select mb-3"
+              [disabled]="selectedEmployee.active === false">
               <option [ngValue]="true">Active</option>
               <option [ngValue]="false">Inactive</option>
             </select>
           </form>
+
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
