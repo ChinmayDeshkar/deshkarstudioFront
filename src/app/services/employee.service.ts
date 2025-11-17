@@ -15,7 +15,7 @@ export class EmployeeService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<any[]>(`${environment.apiUrl}/all-employee`, { headers });
+    return this.http.get<any[]>(`${environment.apiUrl}/admin/all-employee`, { headers });
   }
 
   updateEmployee(employee: any): Observable<any> {
@@ -24,6 +24,6 @@ export class EmployeeService {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.put(`${environment.apiUrl}/update-employee/${employee.id}`, employee, { headers });
+    return this.http.put(`${environment.apiUrl}/admin/update-employee/${employee.id}`, employee, { headers });
   }
 }
