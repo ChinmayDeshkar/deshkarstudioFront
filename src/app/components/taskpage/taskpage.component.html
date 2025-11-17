@@ -57,9 +57,8 @@
         class="badge"
         [class.bg-secondary]="t.orderStatus === 'CREATED'"
         [class.bg-danger]="t.orderStatus === 'CANCELLED'"
-        [class.bg-warning]="
-          t.orderStatus === 'PROCESSING' || t.orderStatus === 'DELIVERED'
-        "
+        [class.bg-warning]="t.orderStatus === 'PROCESSING'"
+        [class.bg-success]="t.orderStatus == 'READY' || t.orderStatus === 'DELIVERED'"
         [class.bg-dark]="t.orderStatus == 'ON-HOLD'"
       >
         {{ t.orderStatus }}
@@ -135,7 +134,7 @@
             <option value="ON-HOLD" class="text-warning fw-bold">ON-HOLD</option>
             <option value="PROCESSING" class="text-info fw-bold">PROCESSING</option>
             <option value="DELIVERED" class="text-primary fw-bold">DELIVERED</option>
-            <option value="COMPLETED" class="text-success fw-bold">COMPLETED</option>
+            <option value="READY" class="text-success fw-bold">READY</option>
             <option value="CANCELLED" class="text-danger fw-bold">CANCELLED</option>
           </select>
         </div>
