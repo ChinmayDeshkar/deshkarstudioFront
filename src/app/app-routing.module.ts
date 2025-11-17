@@ -24,7 +24,7 @@ const routes: Routes = [
     { path: '', component: HomeComponent, canActivate:[AuthGuard] },
     { path: 'profile', component: ProfileComponent, canActivate:[AuthGuard] },
     { path: 'add-purchase', component: AddPurchaseComponent, canActivate:[AuthGuard] },
-    { path: 'purchase-report', component: PurchaseReportComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
+    { path: 'purchase-report', component: PurchaseReportComponent, canActivate:[AuthGuard, RoleGuard], data: { roles: ['ROLE_ADMIN'] } },
     { path: 'reset', component: ResetPasswordComponent },
     { path: 'restricted', component: RestrictedPageComponent },
     { path: 'task-page', component: TaskpageComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
