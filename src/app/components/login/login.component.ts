@@ -34,6 +34,7 @@ export class LoginComponent {
 
         // 2FA CASE
         if (res.otpSent) {
+          alert("OTP is: " + res.otp);
           this.router.navigate(['/verify-otp'], {
             state: { username: this.username },
           });
