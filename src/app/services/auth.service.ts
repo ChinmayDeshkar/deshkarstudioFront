@@ -21,14 +21,6 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/auth/login`, { username, password });
   }
 
-   loginSuccess(token: string, role: string, username: string) {
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('role', role);
-    localStorage.setItem('username', username);
-    this.roleSubject.next(role);
-    this.usernameSubject.next(username);
-  }
-
   resetPassword(username: string, oldPassword: string, newPassword: string) {
     return this.http.post(`${environment.apiUrl}/auth/first-login`, { username, oldPassword, newPassword });
   }
@@ -70,6 +62,10 @@ export class AuthService {
     return this.http.put(`${environment.apiUrl}/user/profile`, payload, {
       headers: { Authorization: `Bearer ${this.getToken()}` }
     });
+  }
+
+  verifyOtp(username: string, otp: string) {
+    return this.http.post(`${environment.apiUrl}/auth/verify-otp`, { username, otp });
   }
 
 }

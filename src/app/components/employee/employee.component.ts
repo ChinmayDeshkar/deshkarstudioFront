@@ -8,6 +8,14 @@ import { EmployeeService } from 'src/app/services/employee.service';
 })
 export class EmployeeComponent implements OnInit {
 
+  newEmployee = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    salary: ""
+  };
+  showAddModal = false;
   employees: any[] = [];
   filteredEmployees: any[] = [];
   searchTerm: string = '';
@@ -68,4 +76,28 @@ export class EmployeeComponent implements OnInit {
   cancelEdit() {
     this.selectedEmployee = null;
   }
+
+  openAddEmployeeModal() {
+  this.showAddModal = true;
+}
+
+closeAddEmployeeModal() {
+  this.showAddModal = false;
+  this.newEmployee = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    salary: ""
+  };
+}
+
+createEmployee() {
+  this.employeeService.addEmployee(this.newEmployee).subscribe({
+    next: () => {
+      this.closeAddEmployeeModal();
+      this.loadEmployees();
+    }
+  });
+}
 }

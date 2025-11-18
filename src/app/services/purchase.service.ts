@@ -25,11 +25,11 @@ export class PurchaseService {
   getToken() { return localStorage.getItem(this.tokenKey); }
 
   /** ✅ Add purchase for a customer */
-  addPurchase(payload: any): Observable<any> {    
-    return this.http.post(`${environment.apiUrl}/purchases/add`, payload, {
-      headers: { Authorization: `Bearer ${this.getToken()}`},
-    });
-  }
+  // addPurchase(payload: any): Observable<any> {    
+  //   return this.http.post(`${environment.apiUrl}/purchases/add`, payload, {
+  //     headers: { Authorization: `Bearer ${this.getToken()}`},
+  //   });
+  // }
 
   getTodayPurchases(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/purchases/today`, {
@@ -61,11 +61,16 @@ updatePurchase(id: number, data: any): Observable<any> {
     );
   }
 
-//   updatePurchase(purchase: any) {
-//     return this.http.put(`${environment.apiUrl}/update/${purchase.purchaseId}`, purchase);
-//   }
-//   updatePurchase(id: number, data: any) {
-//   return this.http.put(`${this.baseUrl}/update/${id}`, data);
-// }
+  addPurchase(body: any) {
+      return this.http.post(`${environment.apiUrl}/purchases/add`, body,{
+        headers: { Authorization: `Bearer ${this.getToken()}` }
+      });
+    }
+
+  getAllProducts() {
+    return this.http.get<any[]>(`${environment.apiUrl}/products/all`,{
+      headers: { Authorization: `Bearer ${this.getToken()}` }
+    });
+  }
 
 }

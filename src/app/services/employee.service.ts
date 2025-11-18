@@ -26,4 +26,8 @@ export class EmployeeService {
     });
     return this.http.put(`${environment.apiUrl}/admin/update-employee/${employee.id}`, employee, { headers });
   }
+
+  addEmployee(data: any): Observable<any> {
+  return this.http.post(`${environment.apiUrl}/auth/signup`, data);
+}
 }
