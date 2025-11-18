@@ -72,4 +72,8 @@ export class AuthService {
     });
   }
 
+  verifyOtp(username: string, otp: string) {
+    return this.http.post(`${environment.apiUrl}/auth/verify-otp`, { username, otp });
+  }
+
 }

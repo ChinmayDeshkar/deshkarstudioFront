@@ -1,0 +1,11 @@
+<div class="container mt-5">
+  <h3>Enter OTP</h3>
+
+  <div *ngIf="message" class="alert alert-danger">{{ message }}</div>
+
+  <input type="text" class="form-control mb-3"
+         placeholder="Enter 6 digit OTP"
+         [(ngModel)]="otp">
+
+  <button class="btn btn-primary w-100" (click)="verifyOtp()">Verify OTP</button>
+</div>

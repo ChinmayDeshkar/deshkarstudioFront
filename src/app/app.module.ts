@@ -23,6 +23,7 @@ import { SearchComponent } from './components/search/search.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AddProductComponent } from './components/add-product/add-product.component';
+import { VerifyOtpComponent } from './components/verify-otp/verify-otp.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { AddProductComponent } from './components/add-product/add-product.compon
     PurchaseDetailsComponent,
     SearchComponent,
     AddProductComponent,
+    VerifyOtpComponent,
   ],
   imports: [
     BrowserModule,

@@ -15,16 +15,20 @@ import { RestrictedPageComponent } from './components/restricted-page/restricted
 import { TaskpageComponent } from './components/taskpage/taskpage.component';
 import { PurchaseDetailsComponent } from './components/purchase-details/purchase-details.component';
 import { SearchComponent } from './components/search/search.component';
+import { VerifyOtpComponent } from './components/verify-otp/verify-otp.component';
+import { AddProductComponent } from './components/add-product/add-product.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'signup', component: SignupComponent },
+    { path: 'verify-otp', component: VerifyOtpComponent },
     { path: 'admin', component: AdminComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
-    // { path: 'employee', component: EmployeeComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
+    { path: 'employee', component: EmployeeComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
     { path: '', component: HomeComponent, canActivate:[AuthGuard] },
     { path: 'profile', component: ProfileComponent, canActivate:[AuthGuard] },
     { path: 'add-purchase', component: AddPurchaseComponent, canActivate:[AuthGuard] },
     { path: 'purchase-report', component: PurchaseReportComponent, canActivate:[AuthGuard, RoleGuard], data: { roles: ['ROLE_ADMIN'] } },
+    { path: 'product', component: AddProductComponent, canActivate:[AuthGuard, RoleGuard], data: { roles: ['ROLE_ADMIN'] } },
     { path: 'reset', component: ResetPasswordComponent },
     { path: 'restricted', component: RestrictedPageComponent },
     { path: 'task-page', component: TaskpageComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
