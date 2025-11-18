@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PurchaseService } from '../../services/purchase.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-add-purchase',
@@ -87,14 +88,25 @@ export class AddPurchaseComponent implements OnInit {
     });
   }
 
-  addItem(): void {
-    this.payload.items.push({
-      productId: null,
-      productName: '',
-      quantity: 1,
-      price: 0
-    });
-  }
+ addItem(): void {
+  const newItem = {
+    productId: null,
+    productName: '',
+    quantity: 1,
+    price: 0
+  };
+
+  this.payload.items = [...this.payload.items, newItem];
+}
+
+    getEmptyItem() {
+      return {
+        productId: null,
+        productName: '',
+        quantity: 1,
+        price: 0
+      };
+    }
 
   removeItem(index: number): void {
     this.payload.items.splice(index, 1);
@@ -123,7 +135,7 @@ export class AddPurchaseComponent implements OnInit {
   }
 
   submit(): void {
-    this.payload.updatedBy = this.username;
+    this.payload.updatedBy = localStorage.getItem('username') ;
     this.purchaseService.addPurchase(this.payload).subscribe({
       next: () => {
         this.message = "Purchase added successfully!";
@@ -159,4 +171,5 @@ export class AddPurchaseComponent implements OnInit {
     this.total = 0;
     this.addItem();
   }
+  
 }

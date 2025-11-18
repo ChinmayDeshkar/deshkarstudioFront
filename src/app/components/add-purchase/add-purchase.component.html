@@ -40,39 +40,43 @@
     <div *ngIf="!loading" class="mb-4">
       <h5 class="fw-semibold border-bottom pb-2 mb-3">Items</h5>
 
-      <div *ngFor="let item of payload.items; let i = index" class="card mb-3 p-3 shadow-sm border-light">
+      <div *ngFor="let item of payload.items; let i = index">
+
         <div class="row g-3 align-items-end">
 
-          <!-- Product -->
+          <!-- Product Dropdown -->
           <div class="col-md-5">
             <label class="form-label">Product</label>
-            <select class="form-select" [(ngModel)]="item.productId" (change)="onProductSelect(item)">
-              <option [ngValue]="null">Select Product</option>
-              <option *ngFor="let p of products" [ngValue]="p.productId">{{ p.productName }}</option>
-            </select>
+            <ng-select [items]="products" bindLabel="productName" bindValue="productId" [searchable]="true"
+              [clearable]="true" placeholder="Select Product" [(ngModel)]="item.productId" [attr.name]="'product-' + i"
+              (change)="onProductSelect(item)">
+            </ng-select>
           </div>
 
           <!-- Price -->
           <div class="col-md-3">
             <label class="form-label">Price</label>
-            <input type="number" class="form-control" [(ngModel)]="item.price" (input)="updateTotal()" />
+            <input type="number" class="form-control" [(ngModel)]="item.price" [attr.name]="'price-' + i"
+              (input)="updateTotal()" />
           </div>
 
           <!-- Quantity -->
           <div class="col-md-2">
             <label class="form-label">Qty</label>
-            <input type="number" class="form-control" [(ngModel)]="item.quantity" (input)="updateTotal()" />
+            <input type="number" class="form-control" [(ngModel)]="item.quantity" [attr.name]="'qty-' + i"
+              (input)="updateTotal()" />
           </div>
 
-          <!-- Remove -->
+          <!-- Delete Button -->
           <div class="col-md-2 text-end">
-            <button class="btn btn-outline-danger" (click)="removeItem(i)" title="Remove item">
+            <button class="btn btn-outline-danger mt-4" (click)="removeItem(i)" title="Remove item">
               <i class="bi bi-trash"></i>
             </button>
           </div>
 
         </div>
       </div>
+
 
       <!-- Add Item Line -->
       <div class="d-flex align-items-center mb-3 text-primary" style="cursor: pointer;" (click)="addItem()">
@@ -96,7 +100,7 @@
           </select>
         </div>
         <div class="col-md-6">
-          <label class="form-label">Advance Paid</label>
+          <label class="form-label">Amount Paid</label>
           <input type="number" class="form-control" [(ngModel)]="payload.advancePaid" (input)="updateBalance()" />
         </div>
       </div>

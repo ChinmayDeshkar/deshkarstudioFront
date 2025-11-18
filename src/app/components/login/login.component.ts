@@ -39,14 +39,6 @@ export class LoginComponent {
           });
           return;
         }
-
-        // NORMAL SUCCESS
-        if (res.AuthToken) {
-          localStorage.setItem('auth_token', res.AuthToken);
-          localStorage.setItem('role', res.Role);
-          this.auth.loginSuccess(res.AuthToken, res.Role, res.Username);
-          this.router.navigate(['/']);
-        }
       },
       error: (err) => (this.message = err.error?.Message || 'Login failed'),
     });

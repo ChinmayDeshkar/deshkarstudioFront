@@ -22,6 +22,7 @@ export class VerifyOtpComponent {
       next: (res:any) => {
         localStorage.setItem('auth_token', res.AuthToken);
         localStorage.setItem('role', res.Role);
+        localStorage.setItem('username', res.Username);
         this.router.navigate(['/']);
       },
       error: (err:any) => {
