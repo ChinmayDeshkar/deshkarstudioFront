@@ -57,7 +57,9 @@
         class="badge"
         [class.bg-secondary]="t.orderStatus === 'CREATED'"
         [class.bg-danger]="t.orderStatus === 'CANCELLED'"
-        [class.bg-warning]="t.orderStatus === 'PROCESSING'"
+        [class.bg-warning]="
+          t.orderStatus === 'PROCESSING'
+        "
         [class.bg-success]="t.orderStatus == 'READY' || t.orderStatus === 'DELIVERED'"
         [class.bg-dark]="t.orderStatus == 'ON-HOLD'"
       >

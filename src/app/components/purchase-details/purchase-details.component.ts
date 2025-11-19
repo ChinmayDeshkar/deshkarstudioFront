@@ -9,6 +9,9 @@ import { PurchaseService } from 'src/app/services/purchase.service';
 })
 export class PurchaseDetailsComponent implements OnInit {
   purchase: any;
+  
+  amountError: string = '';
+  paymentError: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -27,8 +30,17 @@ export class PurchaseDetailsComponent implements OnInit {
   }
 
   calculateBalance() {
-    if (this.purchase.price && this.purchase.advancePaid !== undefined) {
-      this.purchase.balance = this.purchase.price - this.purchase.advancePaid;
+    if (!this.purchase) return;
+
+    const price = this.purchase.price || 0;
+    const paid = this.purchase.advancePaid || 0;
+
+    if (paid > price) {
+      this.amountError = "Amount paid cannot be more than total price!";
+      this.purchase.balance = 0; 
+    } else {
+      this.amountError = "";
+      this.purchase.balance = price - paid;
     }
   }
 
@@ -58,4 +70,22 @@ export class PurchaseDetailsComponent implements OnInit {
   goBack() {
     this.router.navigate(['/purchases']);
   }
+
+  validatePaymentStatus() {
+    if (!this.purchase) return;
+
+    const balance = this.purchase.balance || 0;
+    const status = this.purchase.paymentStatus;
+
+    if (status === 'PAID' && balance > 0) {
+      this.paymentError = "Payment status cannot be PAID when balance is pending!";
+    } 
+    else if (status === 'PENDING' && balance === 0) {
+      this.paymentError = "Payment status cannot be PENDING when balance is zero!";
+    } 
+    else {
+      this.paymentError = "";
+    }
+  }
+
 }

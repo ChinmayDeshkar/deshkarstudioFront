@@ -48,7 +48,6 @@
               <th>Purchase ID</th>
               <th>Price (₹)</th>
               <th>Balance</th>
-              <th>Method</th>
               <th>Payment</th>
               <th>Order</th>
               <th>Remarks</th>
@@ -65,8 +64,6 @@
               <td [ngClass]="p.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'">
                 {{ p.balance }}
               </td>
-
-              <td>{{ p.paymentMethod }}</td>
 
               <!-- Payment Status -->
               <td>

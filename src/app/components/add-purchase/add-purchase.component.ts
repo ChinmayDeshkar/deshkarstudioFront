@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PurchaseService } from '../../services/purchase.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { log } from 'console';
 
 @Component({
   selector: 'app-add-purchase',
@@ -23,7 +22,8 @@ export class AddPurchaseComponent implements OnInit {
     customerName: '',
     phoneNumber: '',
     email: '',
-    address: ''
+    address: '',
+    purchaseCount: 0
   };
 
   payload: any = {
@@ -37,6 +37,8 @@ export class AddPurchaseComponent implements OnInit {
     remarks: '',
     updatedBy: localStorage.getItem('username')
   };
+
+  amountError: string = '';
 
   constructor(
     private purchaseService: PurchaseService,
@@ -68,11 +70,13 @@ export class AddPurchaseComponent implements OnInit {
       return;
     }
     this.loading = true;
+
     this.purchaseService.checkCustomer(this.customer.phoneNumber).subscribe({
-      next: (res: any) => {
+      next: (res: any) => {        
         if (res.exists) {
           this.customerExists = true;
           this.customer = res;
+          
           this.payload.customer = this.customer;
           this.message = "Existing customer found";
         } else {
@@ -88,63 +92,78 @@ export class AddPurchaseComponent implements OnInit {
     });
   }
 
- addItem(): void {
-  const newItem = {
-    productId: null,
-    productName: '',
-    quantity: 1,
-    price: 0
-  };
+  // ---------------------------------------------------------
+  // ✔ ADD NEW ITEM ROW
+  // ---------------------------------------------------------
+  addItem(): void {
+    const newItem = {
+      product: { productId: null, productName: '' },
+      quantity: 1,
+      itemPrice: 0
+    };
 
-  this.payload.items = [...this.payload.items, newItem];
-}
-
-    getEmptyItem() {
-      return {
-        productId: null,
-        productName: '',
-        quantity: 1,
-        price: 0
-      };
-    }
+    this.payload.items.push(newItem);
+  }
 
   removeItem(index: number): void {
     this.payload.items.splice(index, 1);
     this.updateTotal();
   }
 
+  // ---------------------------------------------------------
+  // ✔ When product is selected
+  // ---------------------------------------------------------
   onProductSelect(item: any): void {
-    const selected = this.products.find(p => p.productId === item.productId);
+    const selected = this.products.find(p => p.productId === item.product.productId);
+    console.log(item);
+    
     if (selected) {
-      item.productName = selected.productName;
-      item.price = selected.price;
+      console.log("Selected: " +selected);
+      
+      item.product.productName = selected.productName;
+      item.itemPrice = selected.price;
     }
+
     this.updateTotal();
   }
 
+  // ---------------------------------------------------------
+  // ✔ UPDATE TOTAL PRICE & BALANCE
+  // ---------------------------------------------------------
   updateTotal(): void {
-    this.total = this.payload.items.reduce((sum: number, item: any) =>
-      sum + (item.price || 0) * (item.quantity || 0), 0
+    this.total = this.payload.items.reduce(
+      (sum: number, item: any) => sum + (item.itemPrice || 0) * (item.quantity || 0),
+      0
     );
+
     this.payload.price = this.total;
     this.updateBalance();
   }
 
   updateBalance(): void {
-    this.payload.balance = this.payload.price - (this.payload.advancePaid || 0);
+    if (this.payload.advancePaid > this.payload.price) {
+      this.amountError = "Amount paid cannot be more than total price!";
+      this.payload.balance = 0; // keep balance safe
+    } else {
+      this.amountError = "";
+      this.payload.balance = this.payload.price - (this.payload.advancePaid || 0);
+    }
   }
 
+  // ---------------------------------------------------------
+  // ✔ SUBMIT
+  // ---------------------------------------------------------
   submit(): void {
-    this.payload.updatedBy = localStorage.getItem('username') ;
+    this.payload.updatedBy = localStorage.getItem('username');
+
     this.purchaseService.addPurchase(this.payload).subscribe({
       next: () => {
-        this.message = "Purchase added successfully!";
-        alert(this.message);
+        console.log("FINAL PAYLOAD: ", this.payload);
+        alert("Purchase added successfully!");
         this.resetForm();
       },
       error: () => {
-        this.message = "Error submitting purchase";
-        alert(this.message);
+        alert("Error submitting purchase");
       }
     });
   }
@@ -155,8 +174,10 @@ export class AddPurchaseComponent implements OnInit {
       customerName: '',
       phoneNumber: '',
       email: '',
-      address: ''
+      address: '',
+      purchaseCount: 0
     };
+
     this.payload = {
       customer: this.customer,
       items: [],
@@ -168,8 +189,8 @@ export class AddPurchaseComponent implements OnInit {
       remarks: '',
       updatedBy: ''
     };
+
     this.total = 0;
     this.addItem();
   }
-  
 }
