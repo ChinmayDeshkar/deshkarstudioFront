@@ -10,6 +10,7 @@
     </div>
 
     <form (ngSubmit)="updatePurchase()">
+
       <!-- Customer Info -->
       <div class="card mb-4 border-0 bg-light p-3 rounded-3">
         <h5 class="fw-semibold text-secondary mb-3">
@@ -17,22 +18,62 @@
         </h5>
         <div class="row g-3">
           <div class="col-md-4">
-            <label class="form-label fw-medium">Name</label>
-            <input type="text" class="form-control" [(ngModel)]="purchase.customer.customerName" name="customerName" readonly />
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" [(ngModel)]="purchase.customer.customerName" name="customerName"
+              readonly />
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-medium">Email</label>
+            <label class="form-label">Email</label>
             <input type="email" class="form-control" [(ngModel)]="purchase.customer.email" name="email" readonly />
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-medium">Phone</label>
-            <input type="text" class="form-control" [(ngModel)]="purchase.customer.phoneNumber" name="phoneNumber" readonly />
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" [(ngModel)]="purchase.customer.phoneNumber" name="phoneNumber"
+              readonly />
           </div>
           <div class="col-12">
-            <label class="form-label fw-medium">Address</label>
-            <textarea class="form-control" [(ngModel)]="purchase.customer.address" name="address" rows="2" readonly></textarea>
+            <label class="form-label">Address</label>
+            <textarea class="form-control" [(ngModel)]="purchase.customer.address" name="address" rows="2"
+              readonly></textarea>
           </div>
         </div>
+      </div>
+
+      <!-- Items Table -->
+      <div class="card mb-4 border-0 bg-light p-3 rounded-3">
+        <h5 class="fw-semibold text-secondary mb-3">
+          <i class="bi bi-box-seam me-2"></i> Items Purchased
+        </h5>
+
+        <div *ngIf="purchase.items && purchase.items.length > 0; else noItems">
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+              <thead class="table-primary">
+                <tr>
+                  <th>Product</th>
+                  <th width="80">Qty</th>
+                  <th width="150">Item Price (₹)</th>
+                  <th width="150">Total (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of purchase.items">
+                  <td>{{ item.product?.productName || 'N/A' }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.itemPrice | number:'1.2-2' }}</td>
+                  <td>{{ item.total | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <ng-template #noItems>
+          <div class="text-muted text-center py-3">
+            <i class="bi bi-inboxes fs-3 d-block mb-2"></i>
+            No items found for this purchase.
+          </div>
+        </ng-template>
       </div>
 
       <!-- Purchase Info -->
@@ -40,24 +81,33 @@
         <h5 class="fw-semibold text-secondary mb-3">
           <i class="bi bi-cash-stack me-2"></i> Purchase Details
         </h5>
+
         <div class="row g-3">
           <div class="col-md-4">
-            <label class="form-label fw-medium">Price (₹)</label>
-            <input type="number" class="form-control" [(ngModel)]="purchase.price" name="price" (input)="calculateBalance()" required />
+            <label class="form-label">Price (₹)</label>
+            <input type="number" class="form-control" [(ngModel)]="purchase.price" name="price"
+              (input)="calculateBalance()" required readonly />
           </div>
           <div class="col-md-4">
-            <label class="form-label fw-medium">Advance Paid (₹)</label>
-            <input type="number" class="form-control" [(ngModel)]="purchase.advancePaid" name="advancePaid" (input)="calculateBalance()" />
+            <label class="form-label">Amount Paid (₹)</label>
+            <input type="number" class="form-control" [(ngModel)]="purchase.advancePaid" name="advancePaid"
+              (input)="calculateBalance(); validatePaymentStatus()" />
           </div>
+
           <div class="col-md-4">
-            <label class="form-label fw-medium">Balance (₹)</label>
-            <input type="number" class="form-control" [(ngModel)]="purchase.balance" name="balance" readonly />
+            <label class="form-label">Balance (₹)</label>
+            <input type="number" class="form-control" [(ngModel)]="purchase.balance" name="balance"
+              (input)="calculateBalance(); validatePaymentStatus()" readonly />
           </div>
+        </div>
+
+        <div *ngIf="amountError" class="text-danger fw-semibold mt-1">
+          {{ amountError }}
         </div>
 
         <div class="row g-3 mt-3">
           <div class="col-md-4">
-            <label class="form-label fw-medium">Payment Method</label>
+            <label class="form-label">Payment Method</label>
             <select class="form-select" [(ngModel)]="purchase.paymentMethod" name="paymentMethod">
               <option value="Cash">Cash</option>
               <option value="Online">Online</option>
@@ -65,15 +115,19 @@
               <option value="UPI">UPI</option>
             </select>
           </div>
+
           <div class="col-md-4">
-            <label class="form-label fw-medium">Payment Status</label>
-            <select class="form-select" [(ngModel)]="purchase.paymentStatus" name="paymentStatus">
+            <label class="form-label">Payment Status</label>
+            <select class="form-select" [(ngModel)]="purchase.paymentStatus" name="paymentStatus"
+              (change)="validatePaymentStatus()">
+
               <option value="PAID">PAID</option>
               <option value="PENDING">PENDING</option>
             </select>
           </div>
+
           <div class="col-md-4">
-            <label class="form-label fw-medium">Order Status</label>
+            <label class="form-label">Order Status</label>
             <select class="form-select" [(ngModel)]="purchase.orderStatus" name="orderStatus">
               <option value="CREATED">CREATED</option>
               <option value="PROCESSING">PROCESSING</option>
@@ -84,35 +138,37 @@
             </select>
           </div>
         </div>
+        <div *ngIf="paymentError" class="text-danger fw-semibold mt-1">
+          {{ paymentError }}
+        </div>
+
       </div>
 
       <!-- Remarks -->
       <div class="mb-4">
-        <label class="form-label fw-medium">Remarks</label>
-        <textarea class="form-control" rows="3" [(ngModel)]="purchase.remarks" name="remarks" placeholder="Enter remarks or notes..."></textarea>
+        <label class="form-label">Remarks</label>
+        <textarea class="form-control" rows="3" [(ngModel)]="purchase.remarks" name="remarks"
+          placeholder="Enter remarks or notes..."></textarea>
       </div>
 
       <!-- Metadata -->
       <div class="row g-3 text-muted small mb-4">
         <div class="col-md-4">
-          <i class="bi bi-calendar-event me-1"></i> <b>Created:</b> {{ purchase.createdDate }}
+          <b>Created:</b> {{ purchase.createdDate }}
         </div>
         <div class="col-md-4">
-          <i class="bi bi-clock-history me-1"></i> <b>Last Updated:</b> {{ purchase.updatedDate }}
+          <b>Last Updated:</b> {{ purchase.updatedDate }}
         </div>
         <div class="col-md-4">
-          <i class="bi bi-person-badge me-1"></i> <b>Updated By:</b> {{ purchase.updatedBy }}
+          <b>Updated By:</b> {{ purchase.updatedBy }}
         </div>
       </div>
 
       <!-- Buttons -->
       <div class="text-end">
-        <button type="submit" class="btn btn-success px-4 rounded-pill me-2">
+        <button type="submit" class="btn btn-success px-4 rounded-pill me-2" [disabled]="amountError || paymentError">
           <i class="bi bi-save2 me-2"></i> Update Purchase
         </button>
-        <!-- <button type="button" class="btn btn-outline-danger px-4 rounded-pill" (click)="resetForm()">
-          <i class="bi bi-x-circle me-2"></i> Reset
-        </button> -->
       </div>
     </form>
   </div>
