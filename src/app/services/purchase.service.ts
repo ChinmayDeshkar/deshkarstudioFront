@@ -29,12 +29,6 @@ export class PurchaseService {
     return localStorage.getItem(this.tokenKey);
   }
 
-  /** ✅ Add purchase for a customer */
-  // addPurchase(payload: any): Observable<any> {
-  //   return this.http.post(`${environment.apiUrl}/purchases/add`, payload, {
-  //     headers: { Authorization: `Bearer ${this.getToken()}`},
-  //   });
-  // }
 
   getTodayPurchases(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/purchases/today`, {
@@ -90,4 +84,10 @@ export class PurchaseService {
       }
     );
   }
+
+  getPurchasesByPhone(phone: string): Observable<any[]> {
+  return this.http.get<any[]>(`${environment.apiUrl}/purchases/phone-number/${phone}`, {
+    headers: { Authorization: `Bearer ${this.getToken()}` },
+  });
+}
 }
