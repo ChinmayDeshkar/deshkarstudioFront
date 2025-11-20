@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { log } from 'console';
+import { Location } from '@angular/common';
 import { PurchaseService } from 'src/app/services/purchase.service';
 
 @Component({
@@ -19,7 +19,8 @@ export class PurchaseDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private purchaseService: PurchaseService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   
@@ -98,9 +99,7 @@ export class PurchaseDetailsComponent implements OnInit {
     this.ngOnInit();
   }
 
-  goBack() {
-    this.router.navigate(['/purchases']);
-  }
+
 
   validatePaymentStatus() {
     if (!this.purchase) return;
@@ -119,4 +118,7 @@ export class PurchaseDetailsComponent implements OnInit {
     }
   }
 
+  goBack(){
+    this.location.back();
+  }
 }
