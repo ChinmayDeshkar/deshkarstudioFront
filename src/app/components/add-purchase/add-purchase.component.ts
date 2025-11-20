@@ -33,7 +33,7 @@ export class AddPurchaseComponent implements OnInit {
     advancePaid: 0,
     balance: 0,
     paymentMethod: '',
-    paymentStatus: 'PENDING',
+    paymentStatus: '',
     remarks: '',
     updatedBy: localStorage.getItem('username')
   };
@@ -64,33 +64,43 @@ export class AddPurchaseComponent implements OnInit {
     });
   }
 
-  checkCustomer(): void {
-    if (!this.customer.phoneNumber) {
-      this.message = 'Enter phone number';
-      return;
-    }
-    this.loading = true;
+checkCustomer(): void {
+  const phone = this.customer.phoneNumber?.trim();
 
-    this.purchaseService.checkCustomer(this.customer.phoneNumber).subscribe({
-      next: (res: any) => {        
-        if (res.exists) {
-          this.customerExists = true;
-          this.customer = res;
-          
-          this.payload.customer = this.customer;
-          this.message = "Existing customer found";
-        } else {
-          this.customerExists = false;
-          this.message = "New customer – enter details";
-        }
-        this.loading = false;
-      },
-      error: () => {
-        this.message = "Error checking customer";
-        this.loading = false;
-      }
-    });
+  if (!phone) {
+    this.message = "Enter phone number";
+    return;
   }
+
+  // 🔍 Validate 10-digit number
+  const phoneRegex = /^[0-9]{10}$/;
+  if (!phoneRegex.test(phone)) {
+    this.message = "Enter a valid 10-digit mobile number";
+    return;
+  }
+
+  this.loading = true;
+
+  this.purchaseService.checkCustomer(phone).subscribe({
+    next: (res: any) => {
+      if (res.exists) {
+        this.customerExists = true;
+        this.customer = res;
+        this.payload.customer = this.customer;
+        this.message = "Existing customer found";
+      } else {
+        this.customerExists = false;
+        this.message = "New customer – enter details";
+      }
+      this.loading = false;
+    },
+    error: () => {
+      this.message = "Error checking customer";
+      this.loading = false;
+    }
+  });
+}
+
 
   // ---------------------------------------------------------
   // ✔ ADD NEW ITEM ROW
@@ -147,6 +157,11 @@ export class AddPurchaseComponent implements OnInit {
     } else {
       this.amountError = "";
       this.payload.balance = this.payload.price - (this.payload.advancePaid || 0);
+      if (this.payload.balance === 0) {
+        this.payload.paymentStatus = 'PAID';
+      } else {
+        this.payload.paymentStatus = 'PENDING';
+      }
     }
   }
 

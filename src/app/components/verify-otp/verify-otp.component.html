@@ -1,11 +1,40 @@
-<div class="container mt-5">
-  <h3>Enter OTP</h3>
+<div class="container mt-5" style="max-width: 420px;">
+  <div class="card shadow-sm p-4">
 
-  <div *ngIf="message" class="alert alert-danger">{{ message }}</div>
+    <h4 class="mb-3 text-center">Verify OTP</h4>
 
-  <input type="text" class="form-control mb-3"
-         placeholder="Enter 6 digit OTP"
-         [(ngModel)]="otp">
+    <!-- Masked Email Message -->
+    <div class="alert alert-info py-2 text-center">
+      OTP sent to <strong>{{ maskedEmail }}</strong>
+    </div>
 
-  <button class="btn btn-primary w-100" (click)="verifyOtp()">Verify OTP</button>
+    <!-- Error Message -->
+    <div *ngIf="message" class="alert alert-danger py-2 text-center">
+      {{ message }}
+    </div>
+
+    <!-- OTP Input -->
+    <input type="text"
+           class="form-control mb-3 text-center"
+           maxlength="6"
+           placeholder="Enter 6 digit OTP"
+           [(ngModel)]="otp">
+
+    <!-- Verify Button -->
+    <button class="btn btn-primary w-100 mb-3" (click)="verifyOtp()">
+      Verify OTP
+    </button>
+
+    <!-- Timer -->
+    <div class="text-center text-muted" *ngIf="timer > 0">
+      Resend OTP in <strong>{{ timer }}</strong> seconds
+    </div>
+
+    <!-- Resend -->
+    <div class="text-center mt-3">
+      <a href="#" class="text-primary text-decoration-none" (click)="resendOtp()" *ngIf="timer ==0">
+        Resend OTP
+      </a>
+    </div>
+  </div>
 </div>

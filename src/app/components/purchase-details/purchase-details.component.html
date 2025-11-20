@@ -171,5 +171,51 @@
         </button>
       </div>
     </form>
+    <!-- Notes Section -->
+    <div class="card mt-4 border p-3 rounded-3 shadow-sm">
+      <h5 class="fw-semibold text-secondary mb-3">
+        <i class="bi bi-journal-text me-2"></i> Update Notes
+      </h5>
+
+      <div *ngIf="notes && notes.length > 0; else noNotes">
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th class="text-center">Time</th>
+                <th class="text-center">Updated By</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let n of notes">
+                <td class="text-center fw-semibold">
+                  {{ n.dte_updated }}
+                </td>
+                <td class="text-center">
+                  <span class="">
+                    {{ n.updatedBy }}
+                  </span>
+                </td>
+                <td>
+                  <i class="bi bi-chat-left-text text-primary me-1"></i>
+                  {{ n.note }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <ng-template #noNotes>
+        <div class="text-muted text-center py-3">
+          <i class="bi bi-journal-x fs-3 d-block mb-2"></i>
+          No notes available for this purchase.
+        </div>
+      </ng-template>
+    </div>
+
+
+
   </div>
 </div>

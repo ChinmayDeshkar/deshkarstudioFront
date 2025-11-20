@@ -25,6 +25,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { VerifyOtpComponent } from './components/verify-otp/verify-otp.component';
 import { ProductFilterPipe } from './pipes/product-filter.pipe';
+import { ConvertDatePipe } from './pipes/convert-date.pipe';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { ProductFilterPipe } from './pipes/product-filter.pipe';
     AddProductComponent,
     VerifyOtpComponent,
     ProductFilterPipe,
+    ConvertDatePipe,
   ],
   imports: [
     BrowserModule,

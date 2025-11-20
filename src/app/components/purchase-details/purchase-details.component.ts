@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { log } from 'console';
 import { PurchaseService } from 'src/app/services/purchase.service';
 
 @Component({
@@ -13,21 +14,50 @@ export class PurchaseDetailsComponent implements OnInit {
   amountError: string = '';
   paymentError: string = '';
 
+  notes: any[] = [];
+  purchaseId: number | null = null;
   constructor(
     private route: ActivatedRoute,
     private purchaseService: PurchaseService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.purchaseService.getPurchaseById(+id).subscribe({
-        next: (data) => (this.purchase = data),
-        error: (err) => console.error('Error fetching purchase:', err),
-      });
+  
+    ngOnInit(): void {
+      const id = this.route.snapshot.paramMap.get('id');
+      if (id) {
+        this.purchaseService.getPurchaseById(+id).subscribe({
+          next: (data) => {
+            this.purchase = data;
+            if (this.purchase?.purchaseId) {
+              this.loadNotes();
+            } else {
+              console.error("purchaseId missing in API response:", this.purchase);
+            }
+          },
+          error: (err) => console.error('Error fetching purchase:', err),
+        });
+      }
+      // this.loadNotes();
     }
+
+  loadNotes() {
+    console.log("Loading notes!!!");
+    
+  if (!this.purchase?.purchaseId) {
+   console.log("Null");
+   
+    return;
   }
+
+  this.purchaseService.getNotesByPurchaseId(this.purchase?.purchaseId).subscribe({
+    next: (res) => {
+      this.notes = res,
+      console.log("Notes loaded: ", this.notes);
+    },
+    error: () => this.notes = []
+  });
+}
 
   calculateBalance() {
     if (!this.purchase) return;
@@ -45,7 +75,8 @@ export class PurchaseDetailsComponent implements OnInit {
   }
 
   updatePurchase() {
-  
+    console.log("Update: " + this.purchase);
+    
     if((this.purchase.paymentStatus === 'PAID' && this.purchase.balance > 0) ||
        (this.purchase.paymentStatus != 'PAID' && this.purchase.balance == 0)) {
       alert('❌ Inconsistent payment status and balance!');
