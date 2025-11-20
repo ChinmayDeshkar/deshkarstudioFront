@@ -11,10 +11,22 @@
     <div class="mb-4">
       <label class="form-label fw-semibold">Phone Number</label>
       <div class="input-group">
-        <input type="text" class="form-control" [(ngModel)]="customer.phoneNumber" placeholder="Enter phone number" />
+        <input
+          type="text"
+          maxlength="10"
+          class="form-control"
+          [(ngModel)]="customer.phoneNumber"
+          placeholder="Enter phone number"
+          (keypress)="($event.key.match('[0-9]') ? true : $event.preventDefault())"
+        />
+
         <button class="btn btn-primary" (click)="checkCustomer()">Check</button>
       </div>
-      <div *ngIf="message" class="alert alert-info py-2 mt-2 text-center">{{ message }}</div>
+
+<div *ngIf="message" class="alert alert-info py-2 mt-2 text-center">
+  {{ message }}
+</div>
+
     </div>
 
     <!-- Customer Info -->

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { log } from 'console';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -13,7 +13,15 @@ export class NavbarComponent implements OnInit {
   userRole: string | null = null;
   username: string | null = null;
 
-  constructor(private router: Router, private auth: AuthService) {}
+  currentRoute: string = '';
+  
+  constructor(private router: Router, private auth: AuthService) {
+    this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      this.currentRoute = event.urlAfterRedirects;
+    }
+  });
+  }
 
   ngOnInit(): void {
     this.auth.role$.subscribe(role => this.userRole = role);

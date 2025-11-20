@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseService {
-  private readonly tokenKey = 'auth_token'
+  private readonly tokenKey = 'auth_token';
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
@@ -15,17 +15,22 @@ export class PurchaseService {
       'Content-Type': 'application/json',
     });
   }
-  
+
   /** ✅ Check if customer exists by phone */
   checkCustomer(phoneNumber: string): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/customers/check?phoneNumber=${phoneNumber}`, {
-      headers: { Authorization: `Bearer ${this.getToken()}`},
-    });
+    return this.http.get(
+      `${environment.apiUrl}/customers/check?phoneNumber=${phoneNumber}`,
+      {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      }
+    );
   }
-  getToken() { return localStorage.getItem(this.tokenKey); }
+  getToken() {
+    return localStorage.getItem(this.tokenKey);
+  }
 
   /** ✅ Add purchase for a customer */
-  // addPurchase(payload: any): Observable<any> {    
+  // addPurchase(payload: any): Observable<any> {
   //   return this.http.post(`${environment.apiUrl}/purchases/add`, payload, {
   //     headers: { Authorization: `Bearer ${this.getToken()}`},
   //   });
@@ -33,44 +38,56 @@ export class PurchaseService {
 
   getTodayPurchases(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/purchases/today`, {
-      headers: { Authorization: `Bearer ${this.getToken()}` }
+      headers: { Authorization: `Bearer ${this.getToken()}` },
     });
   }
 
   getMonthlyPurchases(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/purchases/month`,{
-      headers: { Authorization: `Bearer ${this.getToken()}` }
+    return this.http.get(`${environment.apiUrl}/purchases/month`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
     });
   }
 
- getPurchasesByRange(startDate: string, endDate: string): Observable<any> {
-  return this.http.get(`${environment.apiUrl}/purchases/range`, {
-    params: { startDate, endDate },
-    headers: { Authorization: `Bearer ${this.getToken()}` }
-  });
-}
-
-updatePurchase(id: number, data: any): Observable<any> {
-  data.updatedBy = localStorage.getItem('username');
-    return this.http.put<any>(`${environment.apiUrl}/purchases/update/${id}`, data, { headers: this.getHeaders() });
+  getPurchasesByRange(startDate: string, endDate: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/purchases/range`, {
+      params: { startDate, endDate },
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
   }
 
-   getPurchaseById(id: number) {
-    return this.http.get<any>(`${environment.apiUrl}/purchases/${id}`,
+  updatePurchase(id: number, data: any): Observable<any> {
+    data.updatedBy = localStorage.getItem('username');
+    return this.http.put<any>(
+      `${environment.apiUrl}/purchases/update/${id}`,
+      data,
       { headers: this.getHeaders() }
     );
   }
 
-  addPurchase(body: any) {
-      return this.http.post(`${environment.apiUrl}/purchases/add`, body,{
-        headers: { Authorization: `Bearer ${this.getToken()}` }
-      });
-    }
-
-  getAllProducts() {
-    return this.http.get<any[]>(`${environment.apiUrl}/products/all`,{
-      headers: { Authorization: `Bearer ${this.getToken()}` }
+  getPurchaseById(id: number) {
+    return this.http.get<any>(`${environment.apiUrl}/purchases/${id}`, {
+      headers: this.getHeaders(),
     });
   }
 
+  addPurchase(body: any) {
+    return this.http.post(`${environment.apiUrl}/purchases/add`, body, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  getAllProducts() {
+    return this.http.get<any[]>(`${environment.apiUrl}/products/all`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` },
+    });
+  }
+
+  getNotesByPurchaseId(purchaseId: number) {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/purchases/notes/${purchaseId}`,
+      {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      }
+    );
+  }
 }

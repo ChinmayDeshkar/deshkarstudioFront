@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg custom-navbar shadow-sm">
+<nav class="navbar navbar-expand-lg custom-navbar shadow-sm" >
   <div class="container-fluid">
     <a class="navbar-brand d-flex align-items-center text-white fw-bold" routerLink="/">
       <i class="bi bi-box-seam me-2 fs-4"></i> ShopNest
@@ -13,7 +13,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav" *ngIf="currentRoute !== '/login' && currentRoute !== '/verify-otp'">
       <ul class="navbar-nav align-items-center">
         <li class="nav-item mx-2">
           <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
