@@ -11,7 +11,7 @@ import { PurchaseService } from 'src/app/services/purchase.service';
 export class PurchaseDetailsComponent implements OnInit {
   purchase: any;
   originalCustomer: any = {}; // for detecting changes
-  
+
   jobActive = true;
   editMode = false;
   amountError: string = '';
@@ -40,7 +40,11 @@ export class PurchaseDetailsComponent implements OnInit {
       this.purchaseService.getPurchaseById(+id).subscribe({
         next: (data) => {
           this.purchase = data;
-          this.jobActive = this.purchase.orderStatus !== 'CANCELLED';
+          console.log(this.purchase.orderStatus);
+          
+          console.log(this.purchase.orderStatus === 'CANCELLED' || this.purchase.orderStatus === 'DELIVERED');
+          
+          this.jobActive = this.purchase.orderStatus === 'CANCELLED' || this.purchase.orderStatus === 'DELIVERED' ? false : true;
           // Store original customer for comparison
           this.originalCustomer = { ...data.customer };
 
@@ -118,7 +122,7 @@ export class PurchaseDetailsComponent implements OnInit {
         next: () => {
           console.log('UPDATED PAYLOAD: ', payload);
           alert('✅ Purchase updated successfully!');
-          this.router.navigate(['/purchases']);
+          this.router.navigate(['/task-page']);
         },
         error: (err) => {
           console.error('Error updating purchase:', err);
@@ -266,5 +270,13 @@ export class PurchaseDetailsComponent implements OnInit {
     }
 
     return true;
+  }
+
+  generateInvoice() {
+    this.purchaseService.generateInvoice(this.purchase);
+  }
+
+  downloadInvoice() {
+    this.purchaseService.downloadInvoice(this.purchase.purchaseId);
   }
 }
