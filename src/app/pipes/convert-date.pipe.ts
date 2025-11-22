@@ -2,8 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'convertDate' })
 export class ConvertDatePipe implements PipeTransform {
-  transform(value: string): Date {
-    if (!value) return new Date();
+  transform(value: string): Date | null {
+    if (!value) return null;
 
     const [date, time] = value.split(' ');
     const [day, month, year] = date.split('-');
