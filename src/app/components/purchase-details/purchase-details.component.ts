@@ -9,10 +9,10 @@ import { PurchaseService } from 'src/app/services/purchase.service';
   styleUrls: ['./purchase-details.component.css'],
 })
 export class PurchaseDetailsComponent implements OnInit {
-  
   purchase: any;
-  originalCustomer: any = {};  // for detecting changes
-
+  originalCustomer: any = {}; // for detecting changes
+  
+  jobActive = true;
   editMode = false;
   amountError: string = '';
   paymentError: string = '';
@@ -40,7 +40,7 @@ export class PurchaseDetailsComponent implements OnInit {
       this.purchaseService.getPurchaseById(+id).subscribe({
         next: (data) => {
           this.purchase = data;
-
+          this.jobActive = this.purchase.orderStatus !== 'CANCELLED';
           // Store original customer for comparison
           this.originalCustomer = { ...data.customer };
 
@@ -57,10 +57,12 @@ export class PurchaseDetailsComponent implements OnInit {
   loadNotes() {
     if (!this.purchase?.purchaseId) return;
 
-    this.purchaseService.getNotesByPurchaseId(this.purchase.purchaseId).subscribe({
-      next: (res) => (this.notes = res),
-      error: () => (this.notes = []),
-    });
+    this.purchaseService
+      .getNotesByPurchaseId(this.purchase.purchaseId)
+      .subscribe({
+        next: (res) => (this.notes = res),
+        error: () => (this.notes = []),
+      });
   }
 
   // Calculate balance
@@ -95,10 +97,10 @@ export class PurchaseDetailsComponent implements OnInit {
   // --- ✔ UPDATE PURCHASE ---
   updatePurchase() {
     if (!this.isFormValid()) return;
-    
+
     const payload = {
       ...this.purchase,
-      customerUpdated: this.isCustomerUpdated()   // <-- Correct check
+      customerUpdated: this.isCustomerUpdated(), // <-- Correct check
     };
 
     // Payment validation
@@ -131,9 +133,11 @@ export class PurchaseDetailsComponent implements OnInit {
     const status = this.purchase.paymentStatus;
 
     if (status === 'PAID' && balance > 0) {
-      this.paymentError = 'Payment status cannot be PAID when balance is pending!';
+      this.paymentError =
+        'Payment status cannot be PAID when balance is pending!';
     } else if (status === 'PENDING' && balance === 0) {
-      this.paymentError = 'Payment status cannot be PENDING when balance is zero!';
+      this.paymentError =
+        'Payment status cannot be PENDING when balance is zero!';
     } else {
       this.paymentError = '';
     }
@@ -154,7 +158,6 @@ export class PurchaseDetailsComponent implements OnInit {
 
   // --- ✔ TOTAL RECALCULATION (WORKS FOR PRICE + QTY CHANGES) ---
   recalculateTotalPrice() {
-
     this.purchase.items.forEach((i: any) => {
       const price = Number(i.itemPrice || 0);
       const qty = Number(i.quantity || 0);
@@ -183,7 +186,7 @@ export class PurchaseDetailsComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.purchaseService.getAllProducts().subscribe(res => {
+    this.purchaseService.getAllProducts().subscribe((res) => {
       this.products = res;
     });
   }
@@ -204,59 +207,64 @@ export class PurchaseDetailsComponent implements OnInit {
   }
 
   // ----------------------------
-// VALIDATION METHODS
-// ----------------------------
+  // VALIDATION METHODS
+  // ----------------------------
 
-// Email Validation
-isValidEmail(email: string): boolean {
-  if (!email) return true;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+  // Email Validation
+  isValidEmail(email: string): boolean {
+    if (!email) return true;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
-// Phone Validation (10 digits)
-isValidPhone(phone: string): boolean {
-  return /^[0-9]{10}$/.test(phone || '');
-}
+  // Phone Validation (10 digits)
+  isValidPhone(phone: string): boolean {
+    return /^[0-9]{10}$/.test(phone || '');
+  }
 
-// Check orderStatus + balance rule
-validateOrderStatus(): string | null {
-  if (this.purchase.orderStatus === 'DELIVERED' || this.purchase.orderStatus === 'COMPLETED') {
-    if (this.purchase.balance > 0) {
-      return 'Order cannot be marked as COMPLETED or DELIVERED while balance is pending!';
+  // Check orderStatus + balance rule
+  validateOrderStatus(): string | null {
+    if (
+      this.purchase.orderStatus === 'DELIVERED' ||
+      this.purchase.orderStatus === 'COMPLETED'
+    ) {
+      if (this.purchase.balance > 0) {
+        return 'Order cannot be marked as COMPLETED or DELIVERED while balance is pending!';
+      }
     }
-  }
-  return null;
-}
-
-// Final submit validation
-isFormValid(): boolean {
-
-  if (!this.isValidEmail(this.purchase.customer.email)) {
-    alert('❌ Invalid Email Format');
-    return false;
+    return null;
   }
 
-  if (!this.isValidPhone(this.purchase.customer.phoneNumber)) {
-    alert('❌ Phone number must be exactly 10 digits');
-    return false;
-  }
+  // Final submit validation
+  isFormValid(): boolean {
+    if (!this.isValidEmail(this.purchase.customer.email)) {
+      alert('❌ Invalid Email Format');
+      return false;
+    }
 
-  if (this.purchase.paymentStatus === 'PAID' && this.purchase.balance > 0) {
-    alert('❌ Payment cannot be PAID while balance is pending!');
-    return false;
-  }
+    if (!this.isValidPhone(this.purchase.customer.phoneNumber)) {
+      alert('❌ Phone number must be exactly 10 digits');
+      return false;
+    }
 
-  if (this.purchase.paymentStatus === 'PENDING' && this.purchase.balance === 0) {
-    alert('❌ Payment cannot be PENDING when balance is 0!');
-    return false;
-  }
+    if (this.purchase.paymentStatus === 'PAID' && this.purchase.balance > 0) {
+      alert('❌ Payment cannot be PAID while balance is pending!');
+      return false;
+    }
 
-  const orderError = this.validateOrderStatus();
-  if (orderError) {
-    alert('❌ ' + orderError);
-    return false;
-  }
+    if (
+      this.purchase.paymentStatus === 'PENDING' &&
+      this.purchase.balance === 0
+    ) {
+      alert('❌ Payment cannot be PENDING when balance is 0!');
+      return false;
+    }
 
-  return true;
-}
+    const orderError = this.validateOrderStatus();
+    if (orderError) {
+      alert('❌ ' + orderError);
+      return false;
+    }
+
+    return true;
+  }
 }

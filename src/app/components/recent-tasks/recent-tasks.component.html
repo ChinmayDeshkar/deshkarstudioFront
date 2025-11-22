@@ -1,4 +1,4 @@
-<section *ngIf="isAdmin">
+<section>
     <div class="container-fluid py-5 task-page">
     <div class="card shadow-lg border-0 p-4 mx-auto" style="max-width: 1200px;">
         <h2 class="text-center text-gradient fw-bold mb-4">
@@ -16,22 +16,22 @@
         <table class="table table-hover align-middle text-center">
             <thead class="table-primary">
             <tr>
-                <th>Purchase ID</th>
-                <th>Price (₹)</th>
-                <th>Payment Method</th>
+                <th>Job ID</th>
+                <th>Customer</th>
+                <th>Phone Number</th>
                 <th>Payment Status</th>
                 <th>Order Status</th>
-                <th>Balance</th>
                 <th>Remarks</th>
                 <th>Created Date</th>
+                <th>Updated Date</th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let t of tasks; let i = index">
+            <tr *ngFor="let t of tasks; let i = index" (click)="openPurchaseDetails(t.purchaseId)">
                 
                 <td>{{ t.purchaseId }}</td>
-                <td class="fw-semibold text-success">{{ t.price | number }}</td>
-                <td>{{ t.paymentMethod }}</td>
+                <td class="">{{ t.customerName }}</td>
+                <td>{{ t.phoneNumber }}</td>
 
                 <!-- Payment Status (read-only) -->
                 <td>
@@ -48,17 +48,16 @@
                 <td>
                 <span
                     class="badge"
-                    [class.bg-success]="t.orderStatus == 'COMPLETED' || t.orderStatus == 'DELIVERED'"
-                    [class.bg-warning]="t.orderStatus === 'PROCESSING'"
-                    [class.bg-danger]="t.orderStatus == 'COMPLETED' && t.orderStatus == 'CANCELLED'"
+                    [class.bg-danger]="t.orderStatus === 'CANCELLED'"
+                    [class.bg-success]="t.orderStatus === 'DELIVERED'"
                 >
                     {{ t.orderStatus }}
                 </span>
                 </td>
 
-                <td [ngClass]="t.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'">{{ t.balance }}</td>
                 <td>{{ t.remarks || '-' }}</td>
-                <td>{{ t.createdDate | date:'medium' }}</td>
+                <td>{{ t.dte_created | date: 'medium' }}</td>
+                <td>{{ t.dte_updated | date: 'medium' }}</td>
             </tr>
             </tbody>
         </table>

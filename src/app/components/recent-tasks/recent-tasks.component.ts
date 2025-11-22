@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { TaskService } from 'src/app/services/task.service';
 declare var bootstrap: any;
 
@@ -7,7 +8,6 @@ declare var bootstrap: any;
   templateUrl: './recent-tasks.component.html',
 })
 export class RecentTasksComponent implements OnInit {
-
   tasks: any[] = [];
   loading = true;
   isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
@@ -16,7 +16,7 @@ export class RecentTasksComponent implements OnInit {
   statusType: 'payment' | 'order' = 'payment';
   newStatus: string = '';
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private router: Router) {}
 
   ngOnInit() {
     this.fetchRecentTasks();
@@ -32,47 +32,10 @@ export class RecentTasksComponent implements OnInit {
       error: (err: any) => {
         console.error(err);
         this.loading = false;
-      }
+      },
     });
   }
-
-  openStatusModal(task: any, type: 'payment' | 'order') {
-    this.selectedTask = task;
-    this.statusType = type;
-    this.newStatus = type === 'payment' ? task.paymentStatus : task.orderStatus;
-
-    const modalEl = document.getElementById('statusModal');
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
-  }
-
-  confirmChangeStatus() {
-    if (!this.selectedTask) return;
-
-    const purchaseId = this.selectedTask.purchaseId;
-
-    if (this.statusType === 'payment') {
-      this.taskService.updatePaymentStatus(purchaseId, this.newStatus).subscribe({
-        next: () => {
-          this.selectedTask.paymentStatus = this.newStatus;
-          this.closeModal();
-        },
-        error: (err: any) => console.error(err)
-      });
-    } else {
-      this.taskService.updateOrderStatus(purchaseId, this.newStatus).subscribe({
-        next: () => {
-          this.selectedTask.orderStatus = this.newStatus;
-          this.closeModal();
-        },
-        error: (err: any) => console.error(err)
-      });
-    }
-  }
-
-  closeModal() {
-    const modalEl = document.getElementById('statusModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    modal.hide();
+  openPurchaseDetails(purchaseId: number) {
+    this.router.navigate(['/purchase-details', purchaseId]);
   }
 }
