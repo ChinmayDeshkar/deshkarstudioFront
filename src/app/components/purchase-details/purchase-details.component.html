@@ -1,126 +1,176 @@
-<div class="container py-5" *ngIf="purchase">
-  <div class="card shadow-lg border-0 p-4 rounded-4">
+<div class="container py-4" *ngIf="purchase">
+  <div class="card shadow border-0 p-4 rounded-4">
+
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3 class="fw-bold text-primary m-0">
-        <i class="bi bi-pencil-square me-2"></i> Edit Purchase #{{ purchase.purchaseId }}
+      <h3 class="fw-bold text-primary">
+        <i class="bi bi-receipt-cutoff me-2"></i>
+        Purchase #{{ purchase.purchaseId }}
       </h3>
-      <button class="btn btn-outline-secondary btn-sm rounded-pill" (click)="goBack()">
-        <i class="bi bi-arrow-left"></i> Back
-      </button>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" (click)="goBack()">
+          <i class="bi bi-arrow-left"></i> Back
+        </button>
+
+        <button *ngIf="!editMode" class="btn btn-primary btn-sm rounded-pill" (click)="enableEdit()">
+          <i class="bi bi-pencil"></i> Edit
+        </button>
+
+        <button *ngIf="editMode" class="btn btn-warning btn-sm rounded-pill" (click)="disableEdit()">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+      </div>
     </div>
 
     <form (ngSubmit)="updatePurchase()">
 
-      <!-- Customer Info -->
-      <div class="card mb-4 border-0 bg-light p-3 rounded-3">
-        <h5 class="fw-semibold text-secondary mb-3">
+      <!-- Customer Card -->
+      <div class="card border-0 bg-light p-3 rounded-3 mb-4">
+        <h5 class="fw-bold text-secondary mb-3">
           <i class="bi bi-person-circle me-2"></i> Customer Details
         </h5>
+
         <div class="row g-3">
           <div class="col-md-4">
             <label class="form-label">Name</label>
-            <input type="text" class="form-control" [(ngModel)]="purchase.customer.customerName" name="customerName"
-              readonly />
+            <input type="text" [(ngModel)]="purchase.customer.customerName"
+                   name="customerName" class="form-control" [readonly]="!editMode">
           </div>
+
           <div class="col-md-4">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" [(ngModel)]="purchase.customer.email" name="email" readonly />
+            <input type="email" [(ngModel)]="purchase.customer.email"
+                   name="email" class="form-control" [readonly]="!editMode">
+            <small class="text-danger" *ngIf="purchase.customer.email && !isValidEmail(purchase.customer.email)">
+              Invalid email!
+            </small>
           </div>
+
           <div class="col-md-4">
             <label class="form-label">Phone</label>
-            <input type="text" class="form-control" [(ngModel)]="purchase.customer.phoneNumber" name="phoneNumber"
-              readonly />
+            <input type="text" [(ngModel)]="purchase.customer.phoneNumber"
+                   name="phoneNumber" class="form-control" [readonly]="!editMode">
+            <small class="text-danger" *ngIf="purchase.customer.phoneNumber && !isValidPhone(purchase.customer.phoneNumber)">
+              Phone must be 10 digits.
+            </small>
           </div>
+
           <div class="col-12">
             <label class="form-label">Address</label>
-            <textarea class="form-control" [(ngModel)]="purchase.customer.address" name="address" rows="2"
-              readonly></textarea>
+            <textarea rows="2" class="form-control" [(ngModel)]="purchase.customer.address"
+                      name="address" [readonly]="!editMode"></textarea>
           </div>
         </div>
       </div>
 
-      <!-- Items Table -->
-      <div class="card mb-4 border-0 bg-light p-3 rounded-3">
-        <h5 class="fw-semibold text-secondary mb-3">
-          <i class="bi bi-box-seam me-2"></i> Items Purchased
+      <!-- Items -->
+      <div class="card border-0 p-3 mb-4">
+        <h5 class="fw-bold border-bottom pb-2">
+          <i class="bi bi-bag-check me-2"></i> Items
         </h5>
 
-        <div *ngIf="purchase.items && purchase.items.length > 0; else noItems">
-          <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-              <thead class="table-primary">
-                <tr>
-                  <th>Product</th>
-                  <th width="80">Qty</th>
-                  <th width="150">Item Price (₹)</th>
-                  <th width="150">Total (₹)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of purchase.items">
-                  <td>{{ item.product?.productName || 'N/A' }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.itemPrice | number:'1.2-2' }}</td>
-                  <td>{{ item.total | number:'1.2-2' }}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div *ngFor="let item of purchase.items; let i=index" class="border rounded p-3 mb-3 bg-light">
+          <div class="row g-3 align-items-end">
+
+            <!-- Product -->
+            <div class="col-md-5 product-select-wrapper">
+  <label class="form-label">Product</label>
+  <ng-select 
+    [items]="products"
+    bindLabel="productName"
+    bindValue="productId"
+    placeholder="Select Product"
+    [(ngModel)]="item.product.productId"
+    name="product{{i}}"
+    [readonly]="!editMode"
+    (change)="onProductSelect(item)"
+    appendTo="body">
+</ng-select>
+
+</div>
+
+            <!-- Price -->
+            <div class="col-md-3">
+              <label class="form-label">Price</label>
+              <input type="number" class="form-control"
+                     [(ngModel)]="item.itemPrice" (ngModelChange)="recalculateTotalPrice()"
+                     name="price{{i}}" [readonly]="!editMode">
+            </div>
+
+            <!-- Quantity -->
+            <div class="col-md-2">
+              <label class="form-label">Qty</label>
+              <input type="number" class="form-control"
+                     [(ngModel)]="item.quantity" name="qty{{i}}"
+                     (ngModelChange)="recalculateTotalPrice()"
+                     [readonly]="!editMode">
+            </div>
+
+            <!-- Delete -->
+            <div class="col-md-2 text-end" *ngIf="editMode">
+              <button type="button" class="btn btn-outline-danger mt-4"
+                      (click)="removeItem(i)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
           </div>
         </div>
 
-        <ng-template #noItems>
-          <div class="text-muted text-center py-3">
-            <i class="bi bi-inboxes fs-3 d-block mb-2"></i>
-            No items found for this purchase.
-          </div>
-        </ng-template>
+        <!-- Add Item -->
+        <div class="fw-semibold text-primary d-flex align-items-center"
+             style="cursor:pointer" (click)="addItem()" *ngIf="editMode">
+          <i class="bi bi-plus-circle me-2"></i> Add Item
+        </div>
       </div>
 
-      <!-- Purchase Info -->
-      <div class="card mb-4 border-0 bg-light p-3 rounded-3">
-        <h5 class="fw-semibold text-secondary mb-3">
-          <i class="bi bi-cash-stack me-2"></i> Purchase Details
+      <!-- Purchase Summary -->
+      <div class="card border-0 bg-light p-3 rounded-3 mb-4">
+        <h5 class="fw-bold text-secondary mb-3">
+          <i class="bi bi-wallet2 me-2"></i> Purchase Summary
         </h5>
 
         <div class="row g-3">
           <div class="col-md-4">
-            <label class="form-label">Price (₹)</label>
-            <input type="number" class="form-control" [(ngModel)]="purchase.price" name="price"
-              (input)="calculateBalance()" required readonly />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Amount Paid (₹)</label>
-            <input type="number" class="form-control" [(ngModel)]="purchase.advancePaid" name="advancePaid"
-              (input)="calculateBalance(); validatePaymentStatus()" />
+            <label class="form-label">Total Price</label>
+            <input type="number" class="form-control"
+                   [(ngModel)]="purchase.price" name="price"
+                   [readonly]="!editMode"
+                   (input)="calculateBalance()">
           </div>
 
           <div class="col-md-4">
-            <label class="form-label">Balance (₹)</label>
-            <input type="number" class="form-control" [(ngModel)]="purchase.balance" name="balance"
-              (input)="calculateBalance(); validatePaymentStatus()" readonly />
+            <label class="form-label">Amount Paid</label>
+            <input type="number" class="form-control"
+                   [(ngModel)]="purchase.advancePaid"
+                   name="advancePaid" [readonly]="!editMode"
+                   (input)="calculateBalance()">
           </div>
-        </div>
 
-        <div *ngIf="amountError" class="text-danger fw-semibold mt-1">
-          {{ amountError }}
+          <div class="col-md-4">
+            <label class="form-label">Balance</label>
+            <input type="number" class="form-control" [(ngModel)]="purchase.balance"
+                   name="balance" readonly>
+          </div>
         </div>
 
         <div class="row g-3 mt-3">
           <div class="col-md-4">
             <label class="form-label">Payment Method</label>
-            <select class="form-select" [(ngModel)]="purchase.paymentMethod" name="paymentMethod">
-              <option value="Cash">Cash</option>
-              <option value="Online">Online</option>
-              <option value="Card">Card</option>
-              <option value="UPI">UPI</option>
+            <select class="form-select" [(ngModel)]="purchase.paymentMethod"
+                    name="paymentMethod" [disabled]="!editMode">
+              <option>Cash</option>
+              <option>Online</option>
+              <option>Card</option>
+              <option>UPI</option>
             </select>
           </div>
 
           <div class="col-md-4">
             <label class="form-label">Payment Status</label>
-            <select class="form-select" [(ngModel)]="purchase.paymentStatus" name="paymentStatus"
-              (change)="validatePaymentStatus()">
-
+            <select class="form-select" [(ngModel)]="purchase.paymentStatus"
+                    name="paymentStatus" [disabled]="!editMode">
               <option value="PAID">PAID</option>
               <option value="PENDING">PENDING</option>
             </select>
@@ -128,7 +178,8 @@
 
           <div class="col-md-4">
             <label class="form-label">Order Status</label>
-            <select class="form-select" [(ngModel)]="purchase.orderStatus" name="orderStatus">
+            <select class="form-select" [(ngModel)]="purchase.orderStatus"
+                    name="orderStatus" [disabled]="!editMode">
               <option value="CREATED">CREATED</option>
               <option value="PROCESSING">PROCESSING</option>
               <option value="ON-HOLD">ON-HOLD</option>
@@ -137,49 +188,48 @@
               <option value="CANCELLED">CANCELLED</option>
             </select>
           </div>
-        </div>
-        <div *ngIf="paymentError" class="text-danger fw-semibold mt-1">
-          {{ paymentError }}
-        </div>
 
+          <!-- Validation Messages -->
+          <div class="text-danger small mt-2" *ngIf="purchase.orderStatus=='DELIVERED' && purchase.balance>0">
+            Cannot mark DELIVERED when balance is pending.
+          </div>
+
+          <div class="text-danger small mt-1" *ngIf="purchase.paymentStatus=='PAID' && purchase.balance>0">
+            Paid status invalid: Balance pending.
+          </div>
+
+          <div class="text-danger small mt-1" *ngIf="purchase.paymentStatus=='PENDING' && purchase.balance==0">
+            Pending status invalid: No balance remaining.
+          </div>
+        </div>
       </div>
 
       <!-- Remarks -->
       <div class="mb-4">
         <label class="form-label">Remarks</label>
-        <textarea class="form-control" rows="3" [(ngModel)]="purchase.remarks" name="remarks"
-          placeholder="Enter remarks or notes..."></textarea>
+        <textarea rows="3" class="form-control"
+                  [(ngModel)]="purchase.remarks"
+                  name="remarks" [readonly]="!editMode"></textarea>
       </div>
 
-      <!-- Metadata -->
-      <div class="row g-3 text-muted small mb-4">
-        <div class="col-md-4">
-          <b>Created:</b> {{ purchase.createdDate }}
-        </div>
-        <div class="col-md-4">
-          <b>Last Updated:</b> {{ purchase.updatedDate }}
-        </div>
-        <div class="col-md-4">
-          <b>Updated By:</b> {{ purchase.updatedBy }}
-        </div>
-      </div>
-
-      <!-- Buttons -->
-      <div class="text-end">
-        <button type="submit" class="btn btn-success px-4 rounded-pill me-2" [disabled]="amountError || paymentError">
-          <i class="bi bi-save2 me-2"></i> Update Purchase
+      <!-- Save Button -->
+      <div class="text-end" *ngIf="editMode">
+        <button type="submit" class="btn btn-success px-4 rounded-pill">
+          <i class="bi bi-save2 me-1"></i> Save Changes
         </button>
       </div>
+
     </form>
-    <!-- Notes Section -->
-    <div class="card mt-4 border p-3 rounded-3 shadow-sm">
-      <h5 class="fw-semibold text-secondary mb-3">
+
+    <!-- Notes -->
+    <div class="card mt-4 p-3 shadow-sm rounded">
+      <h5 class="fw-bold text-secondary mb-3">
         <i class="bi bi-journal-text me-2"></i> Update Notes
       </h5>
 
-      <div *ngIf="notes && notes.length > 0; else noNotes">
+      <div *ngIf="notes.length; else noNotes">
         <div class="table-responsive">
-          <table class="table table-bordered align-middle">
+          <table class="table table-bordered">
             <thead class="table-dark">
               <tr>
                 <th class="text-center">Time</th>
@@ -187,20 +237,12 @@
                 <th>Note</th>
               </tr>
             </thead>
+
             <tbody>
               <tr *ngFor="let n of notes">
-                <td class="text-center fw-semibold">
-                  {{ n.dte_updated }}
-                </td>
-                <td class="text-center">
-                  <span class="">
-                    {{ n.updatedBy }}
-                  </span>
-                </td>
-                <td>
-                  <i class="bi bi-chat-left-text text-primary me-1"></i>
-                  {{ n.note }}
-                </td>
+                <td class="text-center">{{ n.dte_updated }}</td>
+                <td class="text-center">{{ n.updatedBy }}</td>
+                <td><i class="bi bi-chat-left-text text-primary me-1"></i>{{ n.note }}</td>
               </tr>
             </tbody>
           </table>
@@ -208,14 +250,12 @@
       </div>
 
       <ng-template #noNotes>
-        <div class="text-muted text-center py-3">
+        <div class="text-center text-muted py-3">
           <i class="bi bi-journal-x fs-3 d-block mb-2"></i>
-          No notes available for this purchase.
+          No notes available.
         </div>
       </ng-template>
     </div>
-
-
 
   </div>
 </div>

@@ -11,3 +11,32 @@
   transform: scale(1.01);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
+
+.card {
+  overflow: visible !important;
+  z-index: 1;
+}
+
+.ng-select .ng-dropdown-panel {
+  z-index: 9999 !important;
+}
+
+.product-select-wrapper {
+  position: relative;
+  z-index: 9999;
+}
+
+/* Force ng-select dropdown panel to stay on top of Bootstrap cards */
+.ng-dropdown-panel {
+  position: absolute !important;
+  z-index: 999999 !important;
+}
+
+/* Fix clipping from parent containers */
+.card,
+.container,
+.row,
+.col-md-5,
+.bg-light {
+  overflow: visible !important;
+}
