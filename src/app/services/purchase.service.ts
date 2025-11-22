@@ -29,7 +29,6 @@ export class PurchaseService {
     return localStorage.getItem(this.tokenKey);
   }
 
-
   getTodayPurchases(): Observable<any> {
     return this.http.get(`${environment.apiUrl}/purchases/today`, {
       headers: { Authorization: `Bearer ${this.getToken()}` },
@@ -86,8 +85,39 @@ export class PurchaseService {
   }
 
   getPurchasesByPhone(phone: string): Observable<any[]> {
-  return this.http.get<any[]>(`${environment.apiUrl}/purchases/phone-number/${phone}`, {
-    headers: { Authorization: `Bearer ${this.getToken()}` },
-  });
-}
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/purchases/phone-number/${phone}`,
+      {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      }
+    );
+  }
+
+  generateInvoice(purchase: any) {
+    this.http
+      .post(
+        `${environment.apiUrl}/invoice/generate/${purchase.purchaseId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${this.getToken()}` },
+        }
+      )
+      .subscribe(() => alert('Invoice Generated'));
+  }
+
+  downloadInvoice(purchaseId: number) {
+    this.http
+      .get(`${environment.apiUrl}/invoice/download/${purchaseId}`, {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+        responseType: 'blob',
+      })
+      .subscribe((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice_${purchaseId}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+  }
 }
