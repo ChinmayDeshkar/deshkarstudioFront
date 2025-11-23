@@ -5,10 +5,9 @@ import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'app-add-purchase',
   templateUrl: './add-purchase.component.html',
-  styleUrls: ['./add-purchase.component.css']
+  styleUrls: ['./add-purchase.component.css'],
 })
 export class AddPurchaseComponent implements OnInit {
-
   loading = false;
   message = '';
   customerExists = false;
@@ -23,7 +22,7 @@ export class AddPurchaseComponent implements OnInit {
     phoneNumber: '',
     email: '',
     address: '',
-    purchaseCount: 0
+    purchaseCount: 0,
   };
 
   payload: any = {
@@ -35,10 +34,12 @@ export class AddPurchaseComponent implements OnInit {
     paymentMethod: '',
     paymentStatus: '',
     remarks: '',
-    updatedBy: localStorage.getItem('username')
+    updatedBy: localStorage.getItem('username'),
   };
 
   amountError: string = '';
+  phoneErrorMsg: string | null = null;
+  emailErrorMsg: string | null = null;
 
   constructor(
     private purchaseService: PurchaseService,
@@ -53,54 +54,46 @@ export class AddPurchaseComponent implements OnInit {
 
   getUserName(): void {
     this.authService.getProfile().subscribe({
-      next: (data: any) => this.username = data.username,
-      error: () => this.message = 'Failed to load profile'
+      next: (data: any) => (this.username = data.username),
+      error: () => (this.message = 'Failed to load profile'),
     });
   }
 
   loadProducts(): void {
-    this.purchaseService.getAllProducts().subscribe(res => {
+    this.purchaseService.getAllProducts().subscribe((res) => {
       this.products = res;
     });
   }
 
-checkCustomer(): void {
-  const phone = this.customer.phoneNumber?.trim();
+  checkCustomer(): void {
+    const phone = this.customer.phoneNumber?.trim();
 
-  if (!phone) {
-    this.message = "Enter phone number";
-    return;
-  }
-
-  // 🔍 Validate 10-digit number
-  const phoneRegex = /^[0-9]{10}$/;
-  if (!phoneRegex.test(phone)) {
-    this.message = "Enter a valid 10-digit mobile number";
-    return;
-  }
-
-  this.loading = true;
-
-  this.purchaseService.checkCustomer(phone).subscribe({
-    next: (res: any) => {
-      if (res.exists) {
-        this.customerExists = true;
-        this.customer = res;
-        this.payload.customer = this.customer;
-        this.message = "Existing customer found";
-      } else {
-        this.customerExists = false;
-        this.message = "New customer – enter details";
-      }
-      this.loading = false;
-    },
-    error: () => {
-      this.message = "Error checking customer";
-      this.loading = false;
+    if (!phone) {
+      this.message = 'Enter phone number';
+      return;
     }
-  });
-}
 
+    this.loading = true;
+
+    this.purchaseService.checkCustomer(phone).subscribe({
+      next: (res: any) => {
+        if (res.exists) {
+          this.customerExists = true;
+          this.customer = res;
+          this.payload.customer = this.customer;
+          this.message = 'Existing customer found';
+        } else {
+          this.customerExists = false;
+          this.message = 'New customer – enter details';
+        }
+        this.loading = false;
+      },
+      error: () => {
+        this.message = 'Error checking customer';
+        this.loading = false;
+      },
+    });
+  }
 
   // ---------------------------------------------------------
   // ✔ ADD NEW ITEM ROW
@@ -109,7 +102,7 @@ checkCustomer(): void {
     const newItem = {
       product: { productId: null, productName: '' },
       quantity: 1,
-      itemPrice: 0
+      itemPrice: 0,
     };
 
     this.payload.items.push(newItem);
@@ -124,12 +117,14 @@ checkCustomer(): void {
   // ✔ When product is selected
   // ---------------------------------------------------------
   onProductSelect(item: any): void {
-    const selected = this.products.find(p => p.productId === item.product.productId);
+    const selected = this.products.find(
+      (p) => p.productId === item.product.productId
+    );
     console.log(item);
-    
+
     if (selected) {
-      console.log("Selected: " +selected);
-      
+      console.log('Selected: ' + selected);
+
       item.product.productName = selected.productName;
       item.itemPrice = selected.price;
     }
@@ -142,7 +137,8 @@ checkCustomer(): void {
   // ---------------------------------------------------------
   updateTotal(): void {
     this.total = this.payload.items.reduce(
-      (sum: number, item: any) => sum + (item.itemPrice || 0) * (item.quantity || 0),
+      (sum: number, item: any) =>
+        sum + (item.itemPrice || 0) * (item.quantity || 0),
       0
     );
 
@@ -152,11 +148,12 @@ checkCustomer(): void {
 
   updateBalance(): void {
     if (this.payload.advancePaid > this.payload.price) {
-      this.amountError = "Amount paid cannot be more than total price!";
+      this.amountError = 'Amount paid cannot be more than total price!';
       this.payload.balance = 0; // keep balance safe
     } else {
-      this.amountError = "";
-      this.payload.balance = this.payload.price - (this.payload.advancePaid || 0);
+      this.amountError = '';
+      this.payload.balance =
+        this.payload.price - (this.payload.advancePaid || 0);
       if (this.payload.balance === 0) {
         this.payload.paymentStatus = 'PAID';
       } else {
@@ -173,13 +170,13 @@ checkCustomer(): void {
 
     this.purchaseService.addPurchase(this.payload).subscribe({
       next: () => {
-        console.log("FINAL PAYLOAD: ", this.payload);
-        alert("Purchase added successfully!");
+        console.log('FINAL PAYLOAD: ', this.payload);
+        alert('Purchase added successfully!');
         this.resetForm();
       },
       error: () => {
-        alert("Error submitting purchase");
-      }
+        alert('Error submitting purchase');
+      },
     });
   }
 
@@ -190,7 +187,7 @@ checkCustomer(): void {
       phoneNumber: '',
       email: '',
       address: '',
-      purchaseCount: 0
+      purchaseCount: 0,
     };
 
     this.payload = {
@@ -202,10 +199,22 @@ checkCustomer(): void {
       paymentMethod: '',
       paymentStatus: 'PENDING',
       remarks: '',
-      updatedBy: ''
+      updatedBy: '',
     };
 
     this.total = 0;
     this.addItem();
+  }
+
+  onPhoneChange() {
+    this.phoneErrorMsg = this.purchaseService.validatePhone(
+      this.customer.phoneNumber
+    );
+  }
+
+  onEmailChange() {
+    this.emailErrorMsg = this.purchaseService.validateEmail(
+      this.customer.email
+    );
   }
 }

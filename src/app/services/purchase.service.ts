@@ -120,4 +120,34 @@ export class PurchaseService {
         window.URL.revokeObjectURL(url);
       });
   }
+
+  // Validate phone (must be 10 digits)
+  validatePhone(phone: string): string | null {
+    if (!phone) {
+      return 'Phone number is required';
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!phoneRegex.test(phone)) {
+      return 'Phone number must be exactly 10 digits';
+    }
+
+    return null; // valid
+  }
+
+  // Validate email (optional)
+  validateEmail(email: string): string | null {
+    if (!email || email.trim() === '') {
+      return null; // email is OPTIONAL
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
+      return 'Enter a valid email address';
+    }
+
+    return null; // valid
+  }
 }
