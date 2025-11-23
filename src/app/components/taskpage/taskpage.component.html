@@ -12,9 +12,8 @@
 
       <div *ngIf="!loading && tasks.length > 0" class="table-responsive fade-in">
         <table class="table table-hover align-middle text-center">
-          <thead class="table-primary">
+          <thead class="table-primary" style="display:table; width:100%; table-layout:fixed;">
             <tr>
-
               <th>Job ID</th>
               <th>Customer Name</th>
               <th>Phone</th>
@@ -26,9 +25,11 @@
               <th>Created Date</th>
             </tr>
           </thead>
-          <tbody>
-            <tr *ngFor="let t of tasks; let i = index" class="table-row-clickable"
-              (click)="openPurchaseDetails(t.purchaseId)">
+
+          <tbody style="display:block; max-height:350px; overflow-y:auto;">
+            <tr *ngFor="let t of tasks" style="display:table; width:100%; table-layout:fixed;"
+              class="table-row-clickable" (click)="openPurchaseDetails(t.purchaseId)">
+
               <td>{{ t.purchaseId }}</td>
               <td>{{ t.customerName }}</td>
               <td>{{ t.phoneNumber }}</td>
@@ -36,6 +37,7 @@
               <td [ngClass]="t.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'" *ngIf="isAdmin">
                 {{ t.balance }}
               </td>
+
               <td>
                 <span class="badge" [class.bg-success]="t.paymentStatus === 'PAID'"
                   [class.bg-warning]="t.paymentStatus !== 'PAID'">
@@ -45,23 +47,21 @@
 
               <td>
                 <span class="badge" [class.bg-secondary]="t.orderStatus === 'CREATED'"
-                  [class.bg-danger]="t.orderStatus === 'CANCELLED'" [class.bg-warning]="
-          t.orderStatus === 'PROCESSING'
-        " [class.bg-success]="t.orderStatus == 'READY' || t.orderStatus === 'DELIVERED'"
+                  [class.bg-danger]="t.orderStatus === 'CANCELLED'" [class.bg-warning]="t.orderStatus === 'PROCESSING'"
+                  [class.bg-success]="t.orderStatus == 'READY' || t.orderStatus === 'DELIVERED'"
                   [class.bg-dark]="t.orderStatus == 'ON-HOLD'">
                   {{ t.orderStatus }}
                 </span>
               </td>
 
-              <!-- Truncated Remarks -->
               <td [title]="t.remark" class="text-truncate remark-cell">
-                {{ t.remark?.length > 20 ? (t.remark | slice: 0:20) + '...' : (t.remark || '-') }}
+                {{ t.remark?.length > 20 ? (t.remark | slice:0:20) + '...' : (t.remark || '-') }}
               </td>
 
-              <td>{{ t.dte_created | date: 'medium' }}</td>
+              <td>{{ t.dte_created | date:'medium' }}</td>
+
             </tr>
           </tbody>
-
         </table>
       </div>
 
@@ -71,63 +71,6 @@
       </div>
     </div>
   </div>
-  <!-- Status Change Modal -->
-  <!-- Animated Stylish Status Change Modal -->
-  <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow-lg border-0 rounded-3 modal-animate">
-        <!-- Header with gradient and icon -->
-        <div class="modal-header text-white"
-          style="background: linear-gradient(90deg, #4e73df, #1cc88a); border-bottom: none;">
-          <h5 class="modal-title d-flex align-items-center" id="statusModalLabel">
-            <i class="bi bi-pencil-square me-2 fs-4"></i>
-            Change Status
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <!-- Body -->
-        <div class="modal-body p-4">
-          <p class="fw-semibold mb-3 task-info">
-            <i class="bi bi-card-checklist me-1"></i>
-            <strong>Task:</strong> {{ selectedTask?.purchaseId }} - {{ selectedTask?.customerName }}
-          </p>
-
-          <!-- Payment Status -->
-          <div *ngIf="statusType === 'payment'" class="mb-3">
-            <label for="paymentStatus" class="form-label fw-semibold">Payment Status</label>
-            <select class="form-select form-select-lg status-dropdown" [(ngModel)]="newStatus">
-              <option value="PAID" class="text-success fw-bold">PAID</option>
-              <option value="PENDING" class="text-danger fw-bold">PENDING</option>
-            </select>
-          </div>
-
-          <!-- Order Status -->
-          <div *ngIf="statusType === 'order'">
-            <label for="orderStatus" class="form-label fw-semibold">Order Status</label>
-            <select class="form-select form-select-lg status-dropdown" [(ngModel)]="newStatus">
-              <option value="ON-HOLD" class="text-warning fw-bold">ON-HOLD</option>
-              <option value="PROCESSING" class="text-info fw-bold">PROCESSING</option>
-              <option value="DELIVERED" class="text-primary fw-bold">DELIVERED</option>
-              <option value="READY" class="text-success fw-bold">READY</option>
-              <option value="CANCELLED" class="text-danger fw-bold">CANCELLED</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="modal-footer border-0 px-4 pb-4">
-          <button type="button" class="btn btn-outline-secondary rounded-pill btn-hover" data-bs-dismiss="modal">
-            Cancel
-          </button>
-          <button type="button" class="btn btn-success rounded-pill px-4 btn-hover" (click)="confirmChangeStatus()">
-            <i class="bi bi-check-circle me-1"></i> Confirm
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </section>
 
 <app-recent-tasks></app-recent-tasks>

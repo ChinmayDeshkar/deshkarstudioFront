@@ -19,9 +19,15 @@
         <label class="form-label fw-semibold">Price (₹)</label>
         <input type="number" class="form-control" [(ngModel)]="product.price" placeholder="Enter price" />
       </div>
-      <div class="col-md-2 d-flex align-items-end">
-        <button class="btn btn-success w-100" (click)="submitProduct()">
+      <div class="col-md-2 d-flex align-items-end" *ngIf="!editMode">
+        <button class="btn btn-success" (click)="submitProduct()">
           <i class="bi bi-plus-lg me-1"></i> Add
+        </button>
+      </div>
+
+      <div class="col-md-2 d-flex align-items-end" *ngIf="editMode">
+        <button class="btn btn-warning" (click)="updateProduct()">
+          <i class="bi bi-pencil-square"></i> Update
         </button>
       </div>
     </div>
@@ -30,7 +36,8 @@
 
     <!-- Product List -->
     <h5 class="border-bottom pb-2 mb-3">Available Products</h5>
-    <div *ngFor="let p of products; let i = index" class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded">
+    <div *ngFor="let p of products; let i = index"
+      class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded">
       <div>
         <strong>{{ p.productName }}</strong> - ₹{{ p.price }}
       </div>
