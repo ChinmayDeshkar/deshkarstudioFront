@@ -17,6 +17,7 @@ import { PurchaseDetailsComponent } from './components/purchase-details/purchase
 import { SearchComponent } from './components/search/search.component';
 import { VerifyOtpComponent } from './components/verify-otp/verify-otp.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
+import { IncomeDashboardComponent } from './components/income-dashboard/income-dashboard.component';
 
 const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -34,6 +35,7 @@ const routes: Routes = [
     { path: 'task-page', component: TaskpageComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
     { path: 'purchase-details/:id', component: PurchaseDetailsComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
     { path: 'search', component: SearchComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
+    { path: 'income-dashboard', component: IncomeDashboardComponent, canActivate:[AuthGuard, RoleGuard], data: { roles: ['ROLE_ADMIN'] } },
     { path: '**', redirectTo: '' }
 ];
 
