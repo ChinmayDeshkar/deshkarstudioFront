@@ -1,29 +1,54 @@
-<div class="container mt-4">
-<h2 class="text-center mb-4">Admin Dashboard</h2>
+<div class="container my-5">
+  <h2 class="text-center mb-5 text-primary fw-bold">Admin Dashboard</h2>
 
+  <div class="row g-4">
+    <!-- Employee Management Card -->
+    <div class="col-md-4">
+      <div class="card shadow-lg rounded-4 p-4 text-center admin-card hover-scale" (click)="goToEmployees()" style="cursor: pointer;">
+        <div class="card-body">
+          <h4 class="card-title mb-3">Employee Management</h4>
+          <p class="card-text text-muted">Add, update, or remove employees. Manage roles and access.</p>
+          <button class="btn btn-primary w-100">Go</button>
+        </div>
+      </div>
+    </div>
 
-<div class="row justify-content-center g-4">
-<!-- Employee Management Card -->
-<div class="col-md-4">
-<div class="card shadow-sm rounded-4 p-3 text-center admin-card" (click)="goToEmployees()">
-<div class="card-body">
-<h4 class="card-title mb-3">Employee Management</h4>
-<p class="card-text text-muted">Add, update, or remove employees. Manage roles and access.</p>
-<button class="btn btn-primary w-100">Go</button>
-</div>
-</div>
+    <!-- Product Management Card -->
+    <div class="col-md-4">
+      <div class="card shadow-lg rounded-4 p-4 text-center admin-card hover-scale" (click)="goToProducts()" style="cursor: pointer;">
+        <div class="card-body">
+          <h4 class="card-title mb-3">Product Management</h4>
+          <p class="card-text text-muted">Manage product inventory, pricing, and categories.</p>
+          <button class="btn btn-success w-100">Go</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Income Dashboard Card -->
+    <div class="col-md-4">
+      <div class="card shadow-lg rounded-4 p-4 text-center admin-card hover-scale" (click)="goToIncomeDashboard()" style="cursor: pointer;">
+        <div class="card-body">
+          <h4 class="card-title mb-3">Income Dashboard</h4>
+          <p class="card-text text-muted">View daily, weekly, and monthly income reports with charts.</p>
+          <button class="btn btn-warning w-100">Go</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Optional CSS for hover effect -->
+<style>
+  .hover-scale {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
 
-<!-- Product Management Card -->
-<div class="col-md-4">
-<div class="card shadow-sm rounded-4 p-3 text-center admin-card" (click)="goToProducts()">
-<div class="card-body">
-<h4 class="card-title mb-3">Product Management</h4>
-<p class="card-text text-muted">Manage product inventory, pricing, and categories.</p>
-<button class="btn btn-success w-100">Go</button>
-</div>
-</div>
-</div>
-</div>
-</div>
+  .hover-scale:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .admin-card button {
+    font-weight: 600;
+  }
+</style>

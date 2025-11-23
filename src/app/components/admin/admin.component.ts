@@ -19,4 +19,8 @@ export class AdminComponent implements OnInit {
   goToProducts() {
     this.route.navigate(['/product']);
   }
+
+  goToIncomeDashboard() {
+    this.route.navigate(['/income-dashboard']);
+  }
 }
