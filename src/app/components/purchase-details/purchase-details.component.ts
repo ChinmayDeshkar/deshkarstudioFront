@@ -89,10 +89,14 @@ export class PurchaseDetailsComponent implements OnInit {
     const c = this.purchase.customer;
     const o = this.originalCustomer;
 
+    console.log(c);
+    console.log(o);
+    
+
     if (!c || !o) return false;
 
     return (
-      c.name !== o.name ||
+      c.customerName !== o.customerName ||
       c.phoneNumber !== o.phoneNumber ||
       c.email !== o.email ||
       c.address !== o.address
