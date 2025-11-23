@@ -39,9 +39,7 @@ export class PurchaseDetailsComponent implements OnInit {
     if (id) {
       this.purchaseService.getPurchaseById(+id).subscribe({
         next: (data) => {
-          data = data.sort(
-            (a:any, b:any) => new Date(b.dte_created).getTime() - new Date(a.dte_created).getTime()
-          );
+          
           this.purchase = data;
           console.log(this.purchase.orderStatus);
           
