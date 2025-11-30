@@ -9,6 +9,9 @@ import { PurchaseService } from 'src/app/services/purchase.service';
   styleUrls: ['./purchase-details.component.css'],
 })
 export class PurchaseDetailsComponent implements OnInit {
+  
+  loadingInvoice: boolean = false;
+
   purchase: any;
   originalCustomer: any = {}; // for detecting changes
 
@@ -281,7 +284,24 @@ export class PurchaseDetailsComponent implements OnInit {
     this.purchaseService.generateInvoice(this.purchase);
   }
 
-  downloadInvoice() {
-    this.purchaseService.downloadInvoice(this.purchase.purchaseId);
-  }
+downloadInvoice() {
+  this.loadingInvoice = true; // SHOW LOADER
+
+  this.purchaseService.downloadInvoice(this.purchase.purchaseId).subscribe({
+    next: (response: Blob) => {
+      this.loadingInvoice = false; // HIDE LOADER
+
+      const url = window.URL.createObjectURL(response);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Invoice_${this.purchase.purchaseId}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err: any) => {
+      this.loadingInvoice = false; // HIDE ON ERROR
+      console.error("Invoice download failed", err);
+    }
+  });
+}
 }

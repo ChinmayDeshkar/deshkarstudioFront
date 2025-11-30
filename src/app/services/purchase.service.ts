@@ -106,18 +106,10 @@ export class PurchaseService {
   }
 
   downloadInvoice(purchaseId: number) {
-    this.http
+    return this.http
       .get(`${environment.apiUrl}/invoice/download/${purchaseId}`, {
         headers: { Authorization: `Bearer ${this.getToken()}` },
         responseType: 'blob',
-      })
-      .subscribe((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `invoice_${purchaseId}.pdf`;
-        a.click();
-        window.URL.revokeObjectURL(url);
       });
   }
 
