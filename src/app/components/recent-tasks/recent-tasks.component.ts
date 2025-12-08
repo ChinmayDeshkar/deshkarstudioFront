@@ -26,7 +26,11 @@ export class RecentTasksComponent implements OnInit {
     this.loading = true;
     this.taskService.getRecentTasks().subscribe({
       next: (res: any[]) => {
-        this.tasks = res;
+        this.tasks = res.sort(
+            (a: any, b: any) =>
+              new Date(b.dte_updated).getTime() -
+              new Date(a.dte_updated).getTime()
+          );;
         this.loading = false;
       },
       error: (err: any) => {

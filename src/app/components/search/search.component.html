@@ -5,21 +5,42 @@
         <i class="bi bi-search"></i> Search Purchases
       </h2>
 
-      <!-- Search Input -->
-      <div class="mb-4">
-        <label class="form-label fw-semibold">Customer Phone Number</label>
+      <!-- SEARCH FILTERS -->
+      <!-- Search Mode Selector -->
+      <div class="d-flex justify-content-center gap-3 mb-3">
+        <button class="btn" [class.btn-primary]="searchMode === 'phone'"
+          [class.btn-outline-primary]="searchMode !== 'phone'" (click)="searchMode = 'phone'">
+          Search by Phone
+        </button>
+
+        <button class="btn" [class.btn-primary]="searchMode === 'name'"
+          [class.btn-outline-primary]="searchMode !== 'name'" (click)="searchMode = 'name'">
+          Search by Name
+        </button>
+      </div>
+
+      <!-- Search by Phone -->
+      <div *ngIf="searchMode === 'phone'" class="mb-4">
+        <label class="form-label fw-semibold">Phone Number</label>
         <div class="input-group">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Enter phone number"
-            [(ngModel)]="phone"
-          />
-          <button class="btn btn-primary" (click)="search()">
-            <i class="bi bi-search"></i> Search
+          <input type="text" class="form-control" placeholder="Enter phone number" [(ngModel)]="phone" />
+          <button class="btn btn-primary" (click)="searchByPhone()">
+            Search
           </button>
         </div>
       </div>
+
+      <!-- Search by Customer Name -->
+      <div *ngIf="searchMode === 'name'" class="mb-4">
+        <label class="form-label fw-semibold">Customer Name</label>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Enter name" [(ngModel)]="customerName" />
+          <button class="btn btn-primary" (click)="searchByName()">
+            Search
+          </button>
+        </div>
+      </div>
+
 
       <!-- Loading -->
       <div *ngIf="loading" class="text-center py-5">
@@ -45,11 +66,7 @@
           </thead>
 
           <tbody>
-            <tr
-              *ngFor="let p of purchases"
-              class="table-row-clickable"
-              (click)="openPurchaseDetails(p.purchaseId)"
-            >
+            <tr *ngFor="let p of purchases" class="table-row-clickable" (click)="openPurchaseDetails(p.purchaseId)">
               <td>{{ p.purchaseId }}</td>
               <td>{{ p.customerName }}</td>
               <td>{{ p.phoneNumber }}</td>
@@ -60,34 +77,24 @@
               </td>
 
               <!-- Balance -->
-              <td
-                [ngClass]="p.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'"
-                *ngIf="isAdmin"
-              >
+              <td [ngClass]="p.balance > 0 ? 'text-danger fw-semibold' : 'text-muted'" *ngIf="isAdmin">
                 {{ p.balance }}
               </td>
 
               <!-- Payment Status Badge -->
               <td>
-                <span
-                  class="badge"
-                  [class.bg-success]="p.paymentStatus === 'PAID'"
-                  [class.bg-warning]="p.paymentStatus === 'PENDING'"
-                >
+                <span class="badge" [class.bg-success]="p.paymentStatus === 'PAID'"
+                  [class.bg-warning]="p.paymentStatus === 'PENDING'">
                   {{ p.paymentStatus }}
                 </span>
               </td>
 
               <!-- Order Status Badge -->
               <td>
-                <span
-                  class="badge"
-                  [class.bg-secondary]="p.orderStatus === 'CREATED'"
-                  [class.bg-warning]="p.orderStatus === 'PROCESSING'"
-                  [class.bg-danger]="p.orderStatus === 'CANCELLED'"
+                <span class="badge" [class.bg-secondary]="p.orderStatus === 'CREATED'"
+                  [class.bg-warning]="p.orderStatus === 'PROCESSING'" [class.bg-danger]="p.orderStatus === 'CANCELLED'"
                   [class.bg-dark]="p.orderStatus === 'ON-HOLD'"
-                  [class.bg-success]="p.orderStatus === 'READY' || p.orderStatus === 'DELIVERED'"
-                >
+                  [class.bg-success]="p.orderStatus === 'READY' || p.orderStatus === 'DELIVERED'">
                   {{ p.orderStatus }}
                 </span>
               </td>
@@ -95,9 +102,9 @@
               <!-- Remarks -->
               <td [title]="p.remark" class="text-truncate remark-cell">
                 {{
-                  p.remark?.length > 20
-                    ? (p.remark | slice : 0 : 20) + "..."
-                    : (p.remark || "-")
+                p.remark?.length > 20
+                ? (p.remark | slice : 0 : 20) + "..."
+                : (p.remark || "-")
                 }}
               </td>
 
