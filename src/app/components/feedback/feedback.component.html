@@ -1,0 +1,92 @@
+<div class="page">
+
+    <div class="card">
+
+        <!-- STEP 1 : PHONE -->
+        <div *ngIf="step === 1">
+            <h2 class="title">Share your feedback</h2>
+            <p class="subtitle">It takes less than a minute</p>
+
+            <input type="tel" class="input" placeholder="Enter 10-digit mobile number" [(ngModel)]="phoneNumber"
+                name="phoneNumber" #phoneCtrl="ngModel" required pattern="^[0-9]{10}$" />
+
+            <p class="error" *ngIf="phoneCtrl.invalid && phoneCtrl.touched">
+                Please enter a valid 10-digit mobile number
+            </p>
+
+            <button class="btn primary" (click)="checkPhone()">
+                Next
+            </button>
+
+            <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+        </div>
+
+        <!-- STEP 2 : FEEDBACK -->
+        <div *ngIf="step === 2">
+
+            <label>Overall Rating</label>
+            <div class="rating">
+                <button *ngFor="let r of [1,2,3,4,5]" [class.active]="feedback.overallRating === r"
+                    (click)="selectRating('overall', r)">
+                    ⭐ {{ r }}
+                </button>
+            </div>
+
+            <label>Service Quality</label>
+            <div class="rating">
+                <button *ngFor="let q of [
+            {v:1,l:'😞'},
+            {v:2,l:'😐'},
+            {v:3,l:'🙂'},
+            {v:4,l:'😍'}
+          ]" [class.active]="feedback.serviceQuality === q.v" (click)="selectRating('quality', q.v)">
+                    {{ q.l }}
+                </button>
+            </div>
+
+            <label>Service Type</label>
+            <select class="input" [(ngModel)]="feedback.serviceType">
+                <option value="">Select service</option>
+                <option>Passport</option>
+                <option>Photo Enlargement</option>
+                <option>Lamination</option>
+                <option>Frame</option>
+                <option>Others</option>
+            </select>
+
+            <label>Comment (optional)</label>
+            <textarea class="input" rows="3" maxlength="255" [(ngModel)]="feedback.comment">
+      </textarea>
+            <small class="count">{{ feedback.comment.length }}/255</small>
+
+            <label>Would you recommend us?</label>
+
+            <div class="radio-group">
+                <label class="radio">
+                    <input type="radio" name="recommend" [checked]="feedback.wouldRecommend === true"
+                        (change)="feedback.wouldRecommend = true">
+                    Yes
+                </label>
+
+                <label class="radio">
+                    <input type="radio" name="recommend" [checked]="feedback.wouldRecommend === false"
+                        (change)="feedback.wouldRecommend = false">
+                    No
+                </label>
+            </div>
+
+            <button class="btn success" [disabled]="!isFormValid()" (click)="submitFeedback()">
+                Submit Feedback
+            </button>
+
+            <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+        </div>
+
+        <!-- STEP 3 : THANK YOU -->
+        <div *ngIf="step === 3" class="center">
+            <h2>Thank you ❤️</h2>
+            <p class="subtitle">Your feedback has been submitted</p>
+        </div>
+
+    </div>
+</div>

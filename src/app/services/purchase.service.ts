@@ -93,6 +93,15 @@ export class PurchaseService {
     );
   }
 
+    getPurchasesByName(name: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.apiUrl}/purchases/cust-name/${name}`,
+      {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      }
+    );
+  }
+
   generateInvoice(purchase: any) {
     this.http
       .post(

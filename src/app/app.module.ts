@@ -27,6 +27,7 @@ import { VerifyOtpComponent } from './components/verify-otp/verify-otp.component
 import { ProductFilterPipe } from './pipes/product-filter.pipe';
 import { ConvertDatePipe } from './pipes/convert-date.pipe';
 import { IncomeDashboardComponent } from './components/income-dashboard/income-dashboard.component';
+import { FeedbackComponent } from './components/feedback/feedback.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { IncomeDashboardComponent } from './components/income-dashboard/income-d
     ProductFilterPipe,
     ConvertDatePipe,
     IncomeDashboardComponent,
+    FeedbackComponent,
   ],
   imports: [
     BrowserModule,

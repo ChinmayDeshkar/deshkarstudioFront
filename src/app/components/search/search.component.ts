@@ -13,6 +13,8 @@ export class SearchComponent {
   purchases: any[] = [];
   loading = false;
   isAdmin = false;
+  customerName = '';
+  searchMode: 'phone' | 'name' = 'phone'; // default mode
 
   constructor(
     private purchaseService: PurchaseService,
@@ -24,13 +26,36 @@ export class SearchComponent {
     });
   }
 
-  search() {
+  searchByPhone() {
     if (!this.phone) return;
     this.loading = true;
 
     this.purchaseService.getPurchasesByPhone(this.phone).subscribe({
       next: (res) => {
-        this.purchases = res;
+        this.purchases = res.sort(
+            (a: any, b: any) =>
+              new Date(b.dte_created).getTime() -
+              new Date(a.dte_created).getTime()
+          );
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error(err);
+      },
+    });
+  }
+
+  searchByName() {
+    if (!this.customerName) return;
+    this.loading = true;
+    this.purchaseService.getPurchasesByName(this.customerName).subscribe({
+      next: (res) => {
+        this.purchases = res.sort(
+            (a: any, b: any) =>
+              new Date(b.dte_created).getTime() -
+              new Date(a.dte_created).getTime()
+          );
         this.loading = false;
       },
       error: (err) => {

@@ -24,7 +24,7 @@
     </button>
 
     <!-- Edit / Cancel -->
-    <ng-container *ngIf="jobActive">
+    <ng-container *ngIf="jobActive || role==='ROLE_ADMIN'">
       <button *ngIf="!editMode" class="btn btn-primary btn-sm rounded-pill" (click)="enableEdit()">
         <i class="bi bi-pencil me-1"></i> Edit
       </button>

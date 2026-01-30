@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PurchaseService } from '../../services/purchase.service';
+import { log } from 'console';
+import { Router } from '@angular/router';
 
 declare var bootstrap: any;
 
@@ -22,7 +24,7 @@ export class PurchaseReportComponent implements OnInit {
   isAdmin = false;
   isEmployee = false;
 
-  constructor(private purchaseService: PurchaseService) {}
+  constructor(private purchaseService: PurchaseService, private router: Router) {}
 
   ngOnInit(): void {
     this.isAdmin = localStorage.getItem('role') === 'ROLE_ADMIN';
@@ -42,25 +44,21 @@ export class PurchaseReportComponent implements OnInit {
     return new Date(year, month - 1, day, hour, minutes, seconds);
   }
 
-  /** Convert all dates in list */
-  normalizeDates(list: any[]) {
-    return list.map(p => ({
-      ...p,
-      createdDate: this.formatDate(p.createdDate),
-      updatedDate: this.formatDate(p.updatedDate)
-    }));
-  }
-
   /** Today API */
   loadTodayPurchases() {
     this.loading = true;
     this.purchaseService.getTodayPurchases().subscribe({
       next: (data) => {
-        this.purchases = this.normalizeDates(data);
+        // this.purchases = this.normalizeDates(data);/
+        this.purchases = data.sort(
+            (a: any, b: any) =>
+              new Date(b.dte_created).getTime() -
+              new Date(a.dte_created).getTime()
+          );
         this.loading = false;
       },
       error: () => this.loading = false
-    });
+    }); 
   }
 
   /** Monthly API */
@@ -68,8 +66,15 @@ export class PurchaseReportComponent implements OnInit {
     this.loading = true;
     this.purchaseService.getMonthlyPurchases().subscribe({
       next: (data) => {
-        this.purchases = this.normalizeDates(data);
+       
+        // this.purchases = this.normalizeDates(data);
+         this.purchases = data.sort(
+            (a: any, b: any) =>
+              new Date(b.dte_created).getTime() -
+              new Date(a.dte_created).getTime()
+          );
         this.loading = false;
+        
       },
       error: () => this.loading = false
     });
@@ -85,7 +90,11 @@ export class PurchaseReportComponent implements OnInit {
     this.loading = true;
     this.purchaseService.getPurchasesByRange(this.startDate, this.endDate).subscribe({
       next: (data) => {
-        this.purchases = this.normalizeDates(data);
+        this.purchases = data.sort(
+            (a: any, b: any) =>
+              new Date(b.dte_created).getTime() -
+              new Date(a.dte_created).getTime()
+          );
         this.loading = false;
       },
       error: () => this.loading = false
@@ -98,5 +107,9 @@ export class PurchaseReportComponent implements OnInit {
 
     if (filter === 'today') this.loadTodayPurchases();
     else if (filter === 'month') this.loadMonthlyPurchases();
+  }
+
+    openPurchaseDetails(purchaseId: number) {
+    this.router.navigate(['/purchase-details', purchaseId]);
   }
 }

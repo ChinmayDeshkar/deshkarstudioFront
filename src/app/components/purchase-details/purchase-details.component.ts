@@ -11,7 +11,7 @@ import { PurchaseService } from 'src/app/services/purchase.service';
 export class PurchaseDetailsComponent implements OnInit {
   
   loadingInvoice: boolean = false;
-
+  
   purchase: any;
   originalCustomer: any = {}; // for detecting changes
 
@@ -21,6 +21,7 @@ export class PurchaseDetailsComponent implements OnInit {
   paymentError: string = '';
   products: any[] = [];
 
+  role: string | null = null;
   notes: any[] = [];
   purchaseId: number | null = null;
 
@@ -35,8 +36,12 @@ export class PurchaseDetailsComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     this.loadProducts();
     this.loadPurchase(id);
+    this.role = this.getRole();
   }
 
+  getRole() {
+    return localStorage.getItem('role');
+  }
   // Load purchase details
   loadPurchase(id: string | null) {
     if (id) {
