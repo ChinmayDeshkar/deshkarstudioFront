@@ -37,7 +37,7 @@ const routes: Routes = [
     { path: 'purchase-details/:id', component: PurchaseDetailsComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
     { path: 'search', component: SearchComponent, canActivate:[AuthGuard], data: { roles: ['ROLE_ADMIN', 'ROLE_EMPLOYEE'] } },
     { path: 'income-dashboard', component: IncomeDashboardComponent, canActivate:[AuthGuard, RoleGuard], data: { roles: ['ROLE_ADMIN'] } },
-    { path: 'feedback', component: FeedbackComponent },
+    { path: 'feedback', component: FeedbackComponent, data: { hideNavbar: true } },
     { path: '**', redirectTo: '' }
 ];
 
