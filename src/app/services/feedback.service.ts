@@ -25,14 +25,14 @@ export class FeedbackService {
   // ✅ Check if phone number already submitted feedback
   checkPhoneNumber(phoneNumber: number): Observable<boolean> {
     return this.http.get<boolean>(
-      `${environment.apiUrl}/check/phone-number/${phoneNumber}`
+      `${environment.apiUrl}/feedback/check/phone-number/${phoneNumber}`
     );
   }
 
   // ✅ Add feedback
   addFeedback(feedback: Feedback): Observable<any> {
     return this.http.post(
-      `${environment.apiUrl}/add`,
+      `${environment.apiUrl}/feedback/add`,
       feedback
     );
   }
